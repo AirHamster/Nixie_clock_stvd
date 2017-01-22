@@ -35,14 +35,6 @@ void i2c_master_init(unsigned long f_master_hz, unsigned long f_i2c_hz){
   I2C_CCRH = ((ccr >> 8) & 0x0F);
   //Включаем I2C
   I2C_CR1 |=I2C_CR1_PE;
-	/*
-	   I2C_FREQR =0x10;     //16MHz perif
-   I2C_ITR =0x07;
-   I2C_CCRL =0x50;      //100kHz i2c
-   I2C_CCRH =0;
-   I2C_TRISER =0x11;
-   I2C_CR1 |=I2C_CR1_PE;   //запуск и2с
-  */
 	//Разрешаем подтверждение в конце посылки
   I2C_CR2 |=I2C_CR2_ACK;
 }
@@ -56,43 +48,46 @@ t_i2c_status i2c_wr_reg(unsigned char address, unsigned char reg_addr,
 {                                  
                                  
   //Ждем освобождения шины I2C
-  wait_event(I2C_SR3_BUSY, 10);
-     
+  //wait_event(I2C_SR3_BUSY, 10);
+  while((I2C_SR3 & I2C_SR3_BUSY) !=0);   
   //Генерация СТАРТ-посылки
   I2C_CR2 |= I2C_CR2_START;
   //Ждем установки бита SB
-  wait_event(!I2C_SR1_SB, 1);
-   
+  //wait_event(!I2C_SR1_SB, 1);
+  while((I2C_SR1 & I2C_SR1_SB) == 0); 
    
   //Записываем в регистр данных адрес ведомого устройства
   I2C_DR = address & 0xFE;
   //Ждем подтверждения передачи адреса
-  wait_event(!I2C_SR1_ADDR, 1);
+  //wait_event(!I2C_SR1_ADDR, 1);
+	while((I2C_SR1 & I2C_SR1_ADDR) == 0);
   //Очистка бита ADDR чтением регистра SR3
   I2C_SR3;
    
    
   //Ждем освобождения регистра данных
-  wait_event(!I2C_SR1_TXE, 1);
-  //Отправляем адрес регистра
+  //wait_event(!I2C_SR1_TXE, 1);
+  while((I2C_SR1 & I2C_SR1_TXE) ==0);
+	//Отправляем адрес регистра
   I2C_DR = reg_addr;
    
   //Отправка данных
   while(length--){
     //Ждем освобождения регистра данных
-    wait_event(!I2C_SR1_TXE, 1);
-    //Отправляем адрес регистра
+    //wait_event(!I2C_SR1_TXE, 1);
+    while((I2C_SR1 & I2C_SR1_TXE) == 0);
+		//Отправляем адрес регистра
     I2C_DR = *data++;
   }
    
   //Ловим момент, когда DR освободился и данные попали в сдвиговый регистр
-  wait_event(!(I2C_SR1_TXE && I2C_SR1_BTF), 1);
-   
+  //wait_event(!(I2C_SR1_TXE && I2C_SR1_BTF), 1);
+  while((I2C_SR1 & (I2C_SR1_TXE | I2C_SR1_BTF)) == 0); 
   //Посылаем СТОП-посылку
   I2C_CR2 |= I2C_CR2_STOP;
   //Ждем выполнения условия СТОП
-  wait_event(I2C_CR2_STOP, 1);
-   
+  //wait_event(I2C_CR2_STOP, 1);
+  while((I2C_CR2 & I2C_CR2_STOP) == 0); 
   return I2C_SUCCESS;
 }
  
@@ -106,6 +101,8 @@ t_i2c_status i2c_rd_reg(unsigned char address, unsigned char reg_addr,
    
   //Ждем освобождения шины I2C
   //wait_event(I2C_SR3_BUSY, 10);
+	//I2C_CR1 &= ~I2C_CR1_PE;
+	//I2C_CR1 |= I2C_CR1_PE;
   while((I2C_SR3 & I2C_SR3_BUSY) != 0);   
   //Разрешаем подтверждение в конце посылки
   I2C_CR2 |= I2C_CR2_ACK;
@@ -144,7 +141,7 @@ t_i2c_status i2c_rd_reg(unsigned char address, unsigned char reg_addr,
   //N=1
   if(length == 1){
     //Запрещаем подтверждение в конце посылки
-    I2C_CR2 |= I2C_CR2_ACK;
+    I2C_CR2 &= ~I2C_CR2_ACK;
     //Ждем подтверждения передачи адреса
     //wait_event(!I2C_SR1_ADDR, 1);
     while((I2C_SR1 & I2C_SR1_ADDR) == 0); 
@@ -169,19 +166,20 @@ t_i2c_status i2c_rd_reg(unsigned char address, unsigned char reg_addr,
     //Бит который разрешает NACK на следующем принятом байте
     I2C_CR2 |= I2C_CR2_POS;
     //Ждем подтверждения передачи адреса
-    wait_event(!I2C_SR1_ADDR, 1);
-    //Заплатка из Errata
+   // wait_event(!I2C_SR1_ADDR, 1);
+    while((I2C_SR1 & I2C_SR1_ADDR) == 0);
+		//Заплатка из Errata
     _asm ("SIM");  //on interupts;
     //Очистка бита ADDR чтением регистра SR3
-    I2C_SR3;
+    temp = I2C_SR3;
     //Запрещаем подтверждение в конце посылки
     I2C_CR2 &= ~I2C_CR2_ACK;
     //Заплатка из Errata
     _asm ("RIM");  //on interupts;
     //Ждем момента, когда первый байт окажется в DR,
     //а второй в сдвиговом регистре
-    wait_event(!I2C_SR1_BTF, 1);
-     
+    //wait_event(!I2C_SR1_BTF, 1);
+    while((I2C_SR1 & I2C_SR1_BTF) == 0); 
     //Заплатка из Errata
     _asm ("SIM");  //on interupts;
     //Устанавлием бит STOP
@@ -195,8 +193,8 @@ t_i2c_status i2c_rd_reg(unsigned char address, unsigned char reg_addr,
   //N>2
   else if(length > 2){
     //Ждем подтверждения передачи адреса
-    wait_event(!I2C_SR1_ADDR, 1);
-     
+    //wait_event(!I2C_SR1_ADDR, 1);
+    while((I2C_SR1 & I2C_SR1_ADDR) == 0); 
     //Заплатка из Errata
     _asm ("SIM");  //on interupts;
      
@@ -208,8 +206,9 @@ t_i2c_status i2c_rd_reg(unsigned char address, unsigned char reg_addr,
      
     while(length-- > 3 && tmo){
       //Ожидаем появления данных в DR и сдвиговом регистре
-      wait_event(!I2C_SR1_BTF, 1);
-      //Читаем принятый байт из DR
+      //wait_event(!I2C_SR1_BTF, 1);
+      while((I2C_SR1 & I2C_SR1_BTF) == 0);
+			//Читаем принятый байт из DR
       *data++ = I2C_DR;
     }
     //Время таймаута вышло
@@ -218,8 +217,9 @@ t_i2c_status i2c_rd_reg(unsigned char address, unsigned char reg_addr,
     //Осталось принять 3 последних байта
     //Ждем, когда в DR окажется N-2 байт, а в сдвиговом регистре
     //окажется N-1 байт
-    wait_event(!I2C_SR1_BTF, 1);
-    //Запрещаем подтверждение в конце посылки
+    //wait_event(!I2C_SR1_BTF, 1);
+    while((I2C_SR1 & I2C_SR1_BTF) == 0);
+		//Запрещаем подтверждение в конце посылки
     I2C_CR2 &= ~I2C_CR2_ACK;
     //Заплатка из Errata
     _asm ("SIM");  //on interupts;
@@ -233,8 +233,9 @@ t_i2c_status i2c_rd_reg(unsigned char address, unsigned char reg_addr,
     //Заплатка из Errata
     _asm ("RIM");  //on interupts;
     //Ждем, когда N-й байт попадет в DR из сдвигового регистра
-    wait_event(!I2C_SR1_RXNE, 1);
-    //Читаем N байт
+    //wait_event(!I2C_SR1_RXNE, 1);
+    while((I2C_SR1 & I2C_SR1_RXNE) == 0);
+		//Читаем N байт
     *data++ = I2C_DR;
   }
    
@@ -249,184 +250,16 @@ t_i2c_status i2c_rd_reg(unsigned char address, unsigned char reg_addr,
 
 
 
-
-
-
-
-
-
-
-
-
-int sI2C_Send_data (unsigned char address, unsigned char data, unsigned char direction )
-{
-
-}
 //--------------I2C_functions-------------------
 void i2c_init(void)
  {
-   I2C_FREQR =0x10;     //16MHz perif
-   I2C_ITR =0x07;
-   I2C_CCRL =0x50;      //100kHz i2c
-   I2C_CCRH =0;
-   I2C_TRISER =0x11;
-   I2C_CR1 |=I2C_CR1_PE;   //запуск и2с
  }
-
 void i2c_start(uint8_t rorw, uint8_t start_adr, uint8_t end_adr)        // OK
  {
-   i2c_flags.status =busy;
-   i2c_flags.rw =rorw;
-   i2c_start_adr =start_adr;
-   i2c_end_adr =end_adr;
-
-   if ((rorw == 1) && (i2c_flags.first_send) !=1)
-    {
-      i2c_flags.first_send =1;
-      i2c_current_adr =start_adr;
-    }
-
-   I2C_CR2 |= I2C_CR2_START;
  }      //вроде норм
-
-
-
 void i2c_send_adress(void)      //   OK
  {
-   if (i2c_flags.rw == read && i2c_flags.first_send ==1)
-    {I2C_DR =ds_address || write;}
-
-   else if (i2c_flags.rw ==read && i2c_flags.first_send ==0)
-    {I2C_DR =ds_address || read;}
-
-   else if (i2c_flags.rw == write)
-    {I2C_DR =ds_address || write;}
-
-   //i2c_first_send =1;
  }      //OK
-
 void i2c_send_data()
  {
-   if (i2c_flags.rw == write)
-    {
-   if   (i2c_flags.first_send == 1)
-    {
-      I2C_DR = i2c_current_adr++;
-      i2c_flags.first_send =0;
-      return;
-    }
-  else if (i2c_flags.first_send ==0)
-   {
-     if (i2c_current_adr++ <= i2c_end_adr-1)
-      {
-        I2C_DR = *(data_pointer++);
-      }
-     else
-      {
-        I2C_CR2 &= ~I2C_CR2_ACK;       //NACK для прекращения обмена
-        I2C_CR2 |= I2C_CR2_STOP;      //завершаем
-        I2C_DR =*data_pointer;
-      }
-      }
-    }
-  else if (i2c_flags.rw ==read)
-   {
-
-   if   (i2c_flags.first_send == 1)
-    {
-      I2C_DR = i2c_current_adr++;
-      //i2c_first_send =0;
-      return;
-    }
-  else if (i2c_flags.first_send ==0)
-   {
-     if (i2c_current_adr++ < i2c_end_adr-1)
-      {
-        *(data_pointer++) =I2C_DR;
-      }
-     else
-      {
-        I2C_CR2 &= ~I2C_CR2_ACK;       //NACK для прекращения обмена
-        I2C_CR2 |= I2C_CR2_STOP;      //завершаем
-        *(data_pointer) =I2C_DR;
-				UART_Send(seconds);
-      }
-
-   }
-  }
-
-
-
-
-
-
-   if (data_type == 1 && time_pointer != &hours)
-    {
-      I2C_CR2 |= I2C_CR2_ACK;       //вернем АСК для продолжения приема
-      I2C_DR = (*time_pointer || (*(time_pointer+1) <<4)) || 0x80;
-      time_pointer +=2;
-
-      //если приблизились к отправке последнего байта времени
-        if (time_pointer == &hours)
-      {
-        I2C_CR2 &= ~I2C_CR2_ACK;       //NACK для прекращения обмена
-        I2C_CR2 |= I2C_CR2_STOP;      //завершаем
-        I2C_DR = (*time_pointer || (*(time_pointer+1) <<4)) || 0x80;
-        time_pointer =&hours;
-      }
-    }
-   if (data_type ==2)
-    {
-      I2C_CR2 &= ~I2C_CR2_ACK;       //NACK для прекращения обмена
-        I2C_CR2 |= I2C_CR2_STOP;      //завершаем
-      I2C_DR = 0x11;            //тупо настроили выход с ножки
-    }
  }
-
-void i2c_read_data(uint8_t address)
- {
-   i2c_start(read, address, address);
- }
-
-void i2c_write_data (uint8_t address)
- {
-   i2c_start(write, address, address);
- }
-void I2C_ack_time(void)
- {
-   data_pointer = &fresh_sec;
-   flags.time_ack =1;
-   i2c_flags.rw =1;    //бит направление данных
-   i2c_start(read, time_address, time_address+2);
-
- }
-void  i2c_write_time(void)
- {
-  data_pointer =&fresh_sec;     ////////????????????????????????
-  i2c_flags.rw =0;      //бит направление данных
-  i2c_start(write, time_address, time_address+2);
- }
-
-void i2c_exeption(void)
- {
-   // TODO: обработка ошибки
- }
- 
- void i2c_stupid_read(void)
- {
-	 I2C_CR2 = I2C_CR2_START;
-		while ((I2C_SR1 & 1) == 0);
-			I2C->DR = ds_address || 1;
-				while (I2C_SR1 != 2)//(I2C_SR1 & I2C_SR1_ADDR) == 0)
-				{
-				temp = I2C_SR1;	
-			};
-				
-				temp = I2C_SR3;
-				I2C_CR2 = I2C_CR2_STOP;
-				while ((I2C_SR1 & I2C_SR1_BTF) == 0);
-					temp = I2C_DR;
-					UART_Send(temp);
-				}
-				
-				

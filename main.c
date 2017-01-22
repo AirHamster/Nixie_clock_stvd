@@ -75,6 +75,12 @@ int main( void )
 		i2c_rd_reg(0xD0, 0, time_pointer, 1);
 		
 	//	temp = *time_pointer;
+	if((seconds & 0x80) == 0x80)
+	{
+		seconds = 0;
+		i2c_wr_reg(ds_address, 0,time_pointer, 1);
+	}
+		i2c_rd_reg(0xD0, 0, time_pointer, 1); 	
 			UART_Send(seconds);
 //		i2c_start(0,0,0);
  _asm ("RIM");  //on interupts
