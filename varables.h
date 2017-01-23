@@ -41,7 +41,7 @@ uint8_t deshifr_code_out; //то, что шлетс€ по spi
 uint8_t lamp_number_out;
 uint16_t ds_tacts;
 
-uint8_t fresh_sec, fresh_min, fresh_hours;
+uint8_t fresh_hours_dec, fresh_hours, fresh_min_dec, fresh_min, fresh_sec_dec, fresh_sec, timeset;
 
 uint8_t seconds;                //инфа с ртс
 uint8_t seconds_decades;
@@ -54,6 +54,7 @@ uint8_t hours_decades;
 
 uint8_t *time_pointer = &seconds;
 uint8_t *data_pointer;
+uint8_t *fresh_data_pointer;
 
 uint8_t pins;
 uint8_t spi_queue;        //очередь байтов на регистры

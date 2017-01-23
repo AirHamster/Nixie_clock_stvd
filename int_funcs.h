@@ -3,7 +3,8 @@ void i2c_send_data(void);
 
 void UART_Resieved (void)
 {
-	UART_Send(UART1_DR);
+	//UART_Send(UART1_DR);
+	uart_routine(UART1_DR);
 }
 
 void SPI_Transmitted(void)

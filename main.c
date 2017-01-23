@@ -8,8 +8,9 @@
 
 #include "keys.h"
 #include "timers.h"
-#include "functions.h"
 #include "i2c.h"
+#include "functions.h"
+
 #include "spi.h"
 #include "stm8s_itc.h"
 
@@ -80,7 +81,9 @@ int main( void )
 		seconds = 0;
 		i2c_wr_reg(ds_address, 0,time_pointer, 1);
 	}
-		i2c_rd_reg(0xD0, 0, time_pointer, 1); 	
+		i2c_rd_reg(0xD0, 0, &seconds, 1); 	
+		i2c_rd_reg(0xD0, 1, &minutes, 1);
+		i2c_rd_reg(0xD0, 2, &hours, 1);
 			UART_Send(seconds);
 //		i2c_start(0,0,0);
  _asm ("RIM");  //on interupts

@@ -1,3 +1,4 @@
+ void time_write(void);
  void uart_setup(void)
  {
    UART1_BRR1=0x68;     //9600 bod
@@ -14,3 +15,25 @@ void UART_Send (uint8_t msg)
 	 while((UART1_SR & 0x80) == 0x00);
 	 UART1_DR = msg;
  }
+ void uart_routine(uint8_t data)
+ {
+	 // Если нужно установить время
+	 if (timeset != 0 && timeset <= 5)
+	 {
+		* fresh_data_pointer-- = data-0x30;
+		 timeset++;
+		 return ;
+	 }
+	 if (timeset == 6)
+	 {
+		 *fresh_data_pointer = data-0x30;
+		 timeset = 0;
+		 time_write();
+	 }
+	 
+	 if (data == 's')
+		{
+			timeset = 1;
+			fresh_data_pointer = &fresh_hours_dec;
+		}
+	}

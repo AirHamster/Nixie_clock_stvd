@@ -44,3 +44,14 @@ void display(uint8_t lamp1, uint8_t lamp2, uint8_t lamp3, uint8_t lamp4 )
   lamp4_digit =lamp4;
 
 }
+
+void time_write(void)
+{
+	fresh_hours = fresh_hours + (fresh_hours_dec<<4);
+	fresh_min = fresh_min + (fresh_min_dec<<4);
+	fresh_sec = fresh_sec + (fresh_sec_dec<<4);
+	
+	i2c_wr_reg(ds_address, 2, &fresh_hours, 1);
+	i2c_wr_reg(ds_address, 1, &fresh_min, 1);
+	i2c_wr_reg(ds_address, 0, &fresh_sec, 1);
+}
