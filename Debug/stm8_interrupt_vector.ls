@@ -72,9 +72,9 @@
 2366  0051 3b0002        	push	c_y+2
 2367  0054 be00          	ldw	x,c_y
 2368  0056 89            	pushw	x
-2371                     ; 60 		SPI_Transmitted();
+2371                     ; 59 	SPI_Transmitted();
 2373  0057 cd0000        	call	_SPI_Transmitted
-2375                     ; 62 	return;
+2375                     ; 60 	return;
 2378  005a 85            	popw	x
 2379  005b bf00          	ldw	c_y,x
 2380  005d 320002        	pop	c_y+2
@@ -82,14 +82,14 @@
 2382  0061 bf00          	ldw	c_x,x
 2383  0063 320002        	pop	c_x+2
 2384  0066 80            	iret
-2406                     ; 64 @far @interrupt void I2C_Handler(void)
-2406                     ; 65 {
+2406                     ; 62 @far @interrupt void I2C_Handler(void)
+2406                     ; 63 {
 2407                     	switch	.text
 2408  0067               f_I2C_Handler:
-2412                     ; 67 	return;
+2412                     ; 65 	return;
 2415  0067 80            	iret
-2439                     ; 70 @far @interrupt void Timer1_overflow_handler(void)
-2439                     ; 71 {
+2439                     ; 68 @far @interrupt void Timer1_overflow_handler(void)
+2439                     ; 69 {
 2440                     	switch	.text
 2441  0068               f_Timer1_overflow_handler:
 2443  0068 8a            	push	cc
@@ -103,9 +103,9 @@
 2451  0074 3b0002        	push	c_y+2
 2452  0077 be00          	ldw	x,c_y
 2453  0079 89            	pushw	x
-2456                     ; 72 	Timer1_Compare_1();
+2456                     ; 70 	Timer1_Compare_1();
 2458  007a cd0000        	call	_Timer1_Compare_1
-2460                     ; 73 }
+2460                     ; 71 }
 2463  007d 85            	popw	x
 2464  007e bf00          	ldw	c_y,x
 2465  0080 320002        	pop	c_y+2
@@ -113,8 +113,8 @@
 2467  0084 bf00          	ldw	c_x,x
 2468  0086 320002        	pop	c_x+2
 2469  0089 80            	iret
-2493                     ; 76 @far @interrupt void Timer2_overflow_handler(void)
-2493                     ; 77 {
+2493                     ; 74 @far @interrupt void Timer2_overflow_handler(void)
+2493                     ; 75 {
 2494                     	switch	.text
 2495  008a               f_Timer2_overflow_handler:
 2497  008a 8a            	push	cc
@@ -128,9 +128,9 @@
 2505  0096 3b0002        	push	c_y+2
 2506  0099 be00          	ldw	x,c_y
 2507  009b 89            	pushw	x
-2510                     ; 78 	Timer2_Overflow();
+2510                     ; 76 	Timer2_Overflow();
 2512  009c cd0000        	call	_Timer2_Overflow
-2514                     ; 79 }
+2514                     ; 77 }
 2517  009f 85            	popw	x
 2518  00a0 bf00          	ldw	c_y,x
 2519  00a2 320002        	pop	c_y+2

@@ -9,7 +9,11 @@ void UART_Resieved (void)
 
 void SPI_Transmitted(void)
 {
-	SPI_Send(temp);
+	//PA_ODR |= (1<<3);
+	//SPI_ICR &= ~SPI_ICR_TXEI;
+	//SPI_CR2 &=~ SPI_CR2_SSI;
+	SPI_Send(temp3);
+//SPI_CR2 &= ~SPI_CR2_SSI;
 }
 
 void I2C_Event(void)
@@ -30,51 +34,7 @@ void Keys_switched(void)
 {
 	EXTI_CR1 = ~(EXTI_CR1) & 0b00110000;
 	PC_CR2 = 0;
-	timer2_start(0xff);
-	/*if ((EXTI_CR1 & 0b00110000) == 0b00100000)
-		
-		{
-			UART_Send('r');
-		}
-		else // ((EXTI_CR1 & 0b00110000) == 0b00010000)
-		{
-			UART_Send('f');
-		}
-		
-		temp2 = 0;
-		//for (temp2 = 0; temp2 <= 80000; temp2++)
-		do
-		{
-			temp2++;
-			_asm ("NOP");
-			_asm ("NOP");
-			
-			_asm ("NOP");
-			_asm ("NOP");
-			_asm ("NOP");
-			_asm ("NOP");
-			
-			_asm ("NOP");
-			_asm ("NOP");
-			_asm ("NOP");
-			
-			_asm ("NOP");
-			_asm ("NOP");
-			_asm ("NOP");
-			_asm ("NOP");
-			
-			_asm ("NOP");
-			_asm ("NOP");
-			_asm ("NOP");
-
-			
-		}
-		while (temp2 <= 250);
-	
-	_asm ("NOP");
-	temp2 = 0;
-		*/
-	
+	timer2_start(0xff);	
 }
 
 void DS_interrupt (void)

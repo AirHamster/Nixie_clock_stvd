@@ -29,11 +29,26 @@ void UART_Send (uint8_t msg)
 		 *fresh_data_pointer = data-0x30;
 		 timeset = 0;
 		 time_write();
+		 return;
 	 }
-	 
+	 // s - setup time
 	 if (data == 's')
 		{
 			timeset = 1;
 			fresh_data_pointer = &fresh_hours_dec;
+			return;
+		}
+		// t - запрос времени
+		if (data == 't')
+		{
+			UART_Send(hours_decades+0x30);
+			UART_Send(hours+0x30);
+			UART_Send(':');	
+			UART_Send(minutes_decades+0x30);
+			UART_Send(minutes+0x30);
+			UART_Send(':'); 
+			UART_Send(seconds_decades+0x30);
+			UART_Send(seconds+0x30);
+			UART_Send(0x0A);
 		}
 	}

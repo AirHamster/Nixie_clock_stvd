@@ -56,9 +56,7 @@ struct interrupt_vector {
 
 @far @interrupt void SPI_Transmitted_Handler (void)
 {	
-		//temp = UART1_DR;
-		SPI_Transmitted();
-	
+	SPI_Transmitted();
 	return;
 }
 @far @interrupt void I2C_Handler(void)

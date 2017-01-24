@@ -1,6 +1,6 @@
 #ifndef VARABLES
 #define VARABLES
-
+#define CLOCK_FREQ 16000000
 #define F_MASTER_MHZ 16
 //Результат выполнения операции с i2c
 typedef enum {
@@ -29,7 +29,7 @@ static unsigned long int i2c_timeout;
                                    if(!i2c_timeout) return 0;
  
 // TODO: заменить все переменные состояний на битовые структуры
-uint8_t lamp_number = 1;      //номер лампы 1-4
+uint8_t lamp_number = 0;      //номер лампы 1-4
 
 uint8_t lamp1_digit = 0x0;      //циферки на каждую лампу
 uint8_t lamp2_digit = 0x0;
@@ -37,8 +37,8 @@ uint8_t lamp3_digit = 0x0;
 uint8_t lamp4_digit = 0x0;
 uint8_t dots = 0x80;
 
-uint8_t deshifr_code_out; //то, что шлется по spi
-uint8_t lamp_number_out;
+uint8_t k155_data; //то, что шлется по spi
+uint8_t lamp_number_data;
 uint16_t ds_tacts;
 
 uint8_t fresh_hours_dec, fresh_hours, fresh_min_dec, fresh_min, fresh_sec_dec, fresh_sec, timeset;
@@ -58,8 +58,10 @@ uint8_t *fresh_data_pointer;
 
 uint8_t pins;
 uint8_t spi_queue;        //очередь байтов на регистры
+
 volatile uint8_t temp;
-volatile uint8_t temp2;
+volatile uint8_t temp2 = 0b10101010;
+volatile uint8_t temp3 = 0b00110011;
 
 uint8_t tunning_digits;
 uint8_t two_keys;
@@ -71,10 +73,11 @@ uint8_t i2c_start_adr;
 uint8_t i2c_end_adr;
 uint8_t i2c_current_adr;
 
+uint8_t ds_cr = 0b10010000;
 
 uint8_t data_type;
 
-
+#define TIM2_TOP 0x3E80
 #define time 1
 #define pin_ctrl =2
 #define ram =3
