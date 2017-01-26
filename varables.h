@@ -43,13 +43,13 @@ uint16_t ds_tacts;
 
 uint8_t fresh_hours_dec, fresh_hours, fresh_min_dec, fresh_min, fresh_sec_dec, fresh_sec, timeset;
 
-uint8_t seconds;                //инфа с ртс
+uint8_t hours, minutes, seconds;                //инфа с ртс
 uint8_t seconds_decades;
 
-uint8_t minutes;
+//uint8_t minutes;
 uint8_t minutes_decades;
 
-uint8_t hours;
+//uint8_t hours;
 uint8_t hours_decades;
 
 uint8_t *time_pointer = &seconds;

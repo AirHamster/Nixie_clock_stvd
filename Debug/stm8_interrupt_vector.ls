@@ -138,118 +138,145 @@
 2521  00a6 bf00          	ldw	c_x,x
 2522  00a8 320002        	pop	c_x+2
 2523  00ab 80            	iret
-2525                     .const:	section	.text
-2526  0000               __vectab:
-2527  0000 82            	dc.b	130
-2529  0001 00            	dc.b	page(__stext)
-2530  0002 0000          	dc.w	__stext
-2531  0004 82            	dc.b	130
-2533  0005 00            	dc.b	page(f_NonHandledInterrupt)
-2534  0006 0000          	dc.w	f_NonHandledInterrupt
-2535  0008 82            	dc.b	130
-2537  0009 00            	dc.b	page(f_NonHandledInterrupt)
-2538  000a 0000          	dc.w	f_NonHandledInterrupt
-2539  000c 82            	dc.b	130
-2541  000d 00            	dc.b	page(f_NonHandledInterrupt)
-2542  000e 0000          	dc.w	f_NonHandledInterrupt
-2543  0010 82            	dc.b	130
-2545  0011 00            	dc.b	page(f_NonHandledInterrupt)
-2546  0012 0000          	dc.w	f_NonHandledInterrupt
-2547  0014 82            	dc.b	130
-2549  0015 00            	dc.b	page(f_NonHandledInterrupt)
-2550  0016 0000          	dc.w	f_NonHandledInterrupt
-2551  0018 82            	dc.b	130
-2553  0019 00            	dc.b	page(f_NonHandledInterrupt)
-2554  001a 0000          	dc.w	f_NonHandledInterrupt
-2555  001c 82            	dc.b	130
-2557  001d 01            	dc.b	page(f_Keys_switched_interrupt)
-2558  001e 0001          	dc.w	f_Keys_switched_interrupt
-2559  0020 82            	dc.b	130
-2561  0021 00            	dc.b	page(f_NonHandledInterrupt)
-2562  0022 0000          	dc.w	f_NonHandledInterrupt
-2563  0024 82            	dc.b	130
-2565  0025 00            	dc.b	page(f_NonHandledInterrupt)
-2566  0026 0000          	dc.w	f_NonHandledInterrupt
-2567  0028 82            	dc.b	130
-2569  0029 00            	dc.b	page(f_NonHandledInterrupt)
-2570  002a 0000          	dc.w	f_NonHandledInterrupt
-2571  002c 82            	dc.b	130
-2573  002d 00            	dc.b	page(f_NonHandledInterrupt)
-2574  002e 0000          	dc.w	f_NonHandledInterrupt
-2575  0030 82            	dc.b	130
-2577  0031 45            	dc.b	page(f_SPI_Transmitted_Handler)
-2578  0032 0045          	dc.w	f_SPI_Transmitted_Handler
-2579  0034 82            	dc.b	130
-2581  0035 68            	dc.b	page(f_Timer1_overflow_handler)
-2582  0036 0068          	dc.w	f_Timer1_overflow_handler
-2583  0038 82            	dc.b	130
-2585  0039 00            	dc.b	page(f_NonHandledInterrupt)
-2586  003a 0000          	dc.w	f_NonHandledInterrupt
-2587  003c 82            	dc.b	130
-2589  003d 8a            	dc.b	page(f_Timer2_overflow_handler)
-2590  003e 008a          	dc.w	f_Timer2_overflow_handler
-2591  0040 82            	dc.b	130
-2593  0041 00            	dc.b	page(f_NonHandledInterrupt)
-2594  0042 0000          	dc.w	f_NonHandledInterrupt
-2595  0044 82            	dc.b	130
-2597  0045 00            	dc.b	page(f_NonHandledInterrupt)
-2598  0046 0000          	dc.w	f_NonHandledInterrupt
-2599  0048 82            	dc.b	130
-2601  0049 00            	dc.b	page(f_NonHandledInterrupt)
-2602  004a 0000          	dc.w	f_NonHandledInterrupt
-2603  004c 82            	dc.b	130
-2605  004d 00            	dc.b	page(f_NonHandledInterrupt)
-2606  004e 0000          	dc.w	f_NonHandledInterrupt
-2607  0050 82            	dc.b	130
-2609  0051 23            	dc.b	page(f_UART_Resieved_Handler)
-2610  0052 0023          	dc.w	f_UART_Resieved_Handler
-2611  0054 82            	dc.b	130
-2613  0055 67            	dc.b	page(f_I2C_Handler)
-2614  0056 0067          	dc.w	f_I2C_Handler
-2615  0058 82            	dc.b	130
-2617  0059 00            	dc.b	page(f_NonHandledInterrupt)
-2618  005a 0000          	dc.w	f_NonHandledInterrupt
-2619  005c 82            	dc.b	130
-2621  005d 00            	dc.b	page(f_NonHandledInterrupt)
-2622  005e 0000          	dc.w	f_NonHandledInterrupt
-2623  0060 82            	dc.b	130
-2625  0061 00            	dc.b	page(f_NonHandledInterrupt)
-2626  0062 0000          	dc.w	f_NonHandledInterrupt
-2627  0064 82            	dc.b	130
-2629  0065 00            	dc.b	page(f_NonHandledInterrupt)
-2630  0066 0000          	dc.w	f_NonHandledInterrupt
-2631  0068 82            	dc.b	130
-2633  0069 00            	dc.b	page(f_NonHandledInterrupt)
-2634  006a 0000          	dc.w	f_NonHandledInterrupt
-2635  006c 82            	dc.b	130
-2637  006d 00            	dc.b	page(f_NonHandledInterrupt)
-2638  006e 0000          	dc.w	f_NonHandledInterrupt
-2639  0070 82            	dc.b	130
-2641  0071 00            	dc.b	page(f_NonHandledInterrupt)
-2642  0072 0000          	dc.w	f_NonHandledInterrupt
-2643  0074 82            	dc.b	130
-2645  0075 00            	dc.b	page(f_NonHandledInterrupt)
-2646  0076 0000          	dc.w	f_NonHandledInterrupt
-2647  0078 82            	dc.b	130
-2649  0079 00            	dc.b	page(f_NonHandledInterrupt)
-2650  007a 0000          	dc.w	f_NonHandledInterrupt
-2651  007c 82            	dc.b	130
-2653  007d 00            	dc.b	page(f_NonHandledInterrupt)
-2654  007e 0000          	dc.w	f_NonHandledInterrupt
-2705                     	xdef	__vectab
-2706                     	xref	__stext
-2707                     	xdef	f_Timer2_overflow_handler
-2708                     	xdef	f_Timer1_overflow_handler
-2709                     	xdef	f_I2C_Handler
-2710                     	xdef	f_SPI_Transmitted_Handler
-2711                     	xdef	f_UART_Resieved_Handler
-2712                     	xdef	f_Keys_switched_interrupt
-2713                     	xdef	f_NonHandledInterrupt
-2714                     	xref	_Timer2_Overflow
-2715                     	xref	_Timer1_Compare_1
-2716                     	xref	_Keys_switched
-2717                     	xref	_UART_Resieved
-2718                     	xref	_SPI_Transmitted
-2719                     	xref.b	c_x
-2720                     	xref.b	c_y
-2739                     	end
+2546                     ; 79 @far @interrupt void ds_pulse_interrupt(void)
+2546                     ; 80 {
+2547                     	switch	.text
+2548  00ac               f_ds_pulse_interrupt:
+2550  00ac 8a            	push	cc
+2551  00ad 84            	pop	a
+2552  00ae a4bf          	and	a,#191
+2553  00b0 88            	push	a
+2554  00b1 86            	pop	cc
+2555  00b2 3b0002        	push	c_x+2
+2556  00b5 be00          	ldw	x,c_x
+2557  00b7 89            	pushw	x
+2558  00b8 3b0002        	push	c_y+2
+2559  00bb be00          	ldw	x,c_y
+2560  00bd 89            	pushw	x
+2563                     ; 81 	time_refresh();
+2565  00be cd0000        	call	_time_refresh
+2567                     ; 82 }
+2570  00c1 85            	popw	x
+2571  00c2 bf00          	ldw	c_y,x
+2572  00c4 320002        	pop	c_y+2
+2573  00c7 85            	popw	x
+2574  00c8 bf00          	ldw	c_x,x
+2575  00ca 320002        	pop	c_x+2
+2576  00cd 80            	iret
+2578                     .const:	section	.text
+2579  0000               __vectab:
+2580  0000 82            	dc.b	130
+2582  0001 00            	dc.b	page(__stext)
+2583  0002 0000          	dc.w	__stext
+2584  0004 82            	dc.b	130
+2586  0005 00            	dc.b	page(f_NonHandledInterrupt)
+2587  0006 0000          	dc.w	f_NonHandledInterrupt
+2588  0008 82            	dc.b	130
+2590  0009 00            	dc.b	page(f_NonHandledInterrupt)
+2591  000a 0000          	dc.w	f_NonHandledInterrupt
+2592  000c 82            	dc.b	130
+2594  000d 00            	dc.b	page(f_NonHandledInterrupt)
+2595  000e 0000          	dc.w	f_NonHandledInterrupt
+2596  0010 82            	dc.b	130
+2598  0011 00            	dc.b	page(f_NonHandledInterrupt)
+2599  0012 0000          	dc.w	f_NonHandledInterrupt
+2600  0014 82            	dc.b	130
+2602  0015 ac            	dc.b	page(f_ds_pulse_interrupt)
+2603  0016 00ac          	dc.w	f_ds_pulse_interrupt
+2604  0018 82            	dc.b	130
+2606  0019 00            	dc.b	page(f_NonHandledInterrupt)
+2607  001a 0000          	dc.w	f_NonHandledInterrupt
+2608  001c 82            	dc.b	130
+2610  001d 01            	dc.b	page(f_Keys_switched_interrupt)
+2611  001e 0001          	dc.w	f_Keys_switched_interrupt
+2612  0020 82            	dc.b	130
+2614  0021 00            	dc.b	page(f_NonHandledInterrupt)
+2615  0022 0000          	dc.w	f_NonHandledInterrupt
+2616  0024 82            	dc.b	130
+2618  0025 00            	dc.b	page(f_NonHandledInterrupt)
+2619  0026 0000          	dc.w	f_NonHandledInterrupt
+2620  0028 82            	dc.b	130
+2622  0029 00            	dc.b	page(f_NonHandledInterrupt)
+2623  002a 0000          	dc.w	f_NonHandledInterrupt
+2624  002c 82            	dc.b	130
+2626  002d 00            	dc.b	page(f_NonHandledInterrupt)
+2627  002e 0000          	dc.w	f_NonHandledInterrupt
+2628  0030 82            	dc.b	130
+2630  0031 45            	dc.b	page(f_SPI_Transmitted_Handler)
+2631  0032 0045          	dc.w	f_SPI_Transmitted_Handler
+2632  0034 82            	dc.b	130
+2634  0035 68            	dc.b	page(f_Timer1_overflow_handler)
+2635  0036 0068          	dc.w	f_Timer1_overflow_handler
+2636  0038 82            	dc.b	130
+2638  0039 00            	dc.b	page(f_NonHandledInterrupt)
+2639  003a 0000          	dc.w	f_NonHandledInterrupt
+2640  003c 82            	dc.b	130
+2642  003d 8a            	dc.b	page(f_Timer2_overflow_handler)
+2643  003e 008a          	dc.w	f_Timer2_overflow_handler
+2644  0040 82            	dc.b	130
+2646  0041 00            	dc.b	page(f_NonHandledInterrupt)
+2647  0042 0000          	dc.w	f_NonHandledInterrupt
+2648  0044 82            	dc.b	130
+2650  0045 00            	dc.b	page(f_NonHandledInterrupt)
+2651  0046 0000          	dc.w	f_NonHandledInterrupt
+2652  0048 82            	dc.b	130
+2654  0049 00            	dc.b	page(f_NonHandledInterrupt)
+2655  004a 0000          	dc.w	f_NonHandledInterrupt
+2656  004c 82            	dc.b	130
+2658  004d 00            	dc.b	page(f_NonHandledInterrupt)
+2659  004e 0000          	dc.w	f_NonHandledInterrupt
+2660  0050 82            	dc.b	130
+2662  0051 23            	dc.b	page(f_UART_Resieved_Handler)
+2663  0052 0023          	dc.w	f_UART_Resieved_Handler
+2664  0054 82            	dc.b	130
+2666  0055 67            	dc.b	page(f_I2C_Handler)
+2667  0056 0067          	dc.w	f_I2C_Handler
+2668  0058 82            	dc.b	130
+2670  0059 00            	dc.b	page(f_NonHandledInterrupt)
+2671  005a 0000          	dc.w	f_NonHandledInterrupt
+2672  005c 82            	dc.b	130
+2674  005d 00            	dc.b	page(f_NonHandledInterrupt)
+2675  005e 0000          	dc.w	f_NonHandledInterrupt
+2676  0060 82            	dc.b	130
+2678  0061 00            	dc.b	page(f_NonHandledInterrupt)
+2679  0062 0000          	dc.w	f_NonHandledInterrupt
+2680  0064 82            	dc.b	130
+2682  0065 00            	dc.b	page(f_NonHandledInterrupt)
+2683  0066 0000          	dc.w	f_NonHandledInterrupt
+2684  0068 82            	dc.b	130
+2686  0069 00            	dc.b	page(f_NonHandledInterrupt)
+2687  006a 0000          	dc.w	f_NonHandledInterrupt
+2688  006c 82            	dc.b	130
+2690  006d 00            	dc.b	page(f_NonHandledInterrupt)
+2691  006e 0000          	dc.w	f_NonHandledInterrupt
+2692  0070 82            	dc.b	130
+2694  0071 00            	dc.b	page(f_NonHandledInterrupt)
+2695  0072 0000          	dc.w	f_NonHandledInterrupt
+2696  0074 82            	dc.b	130
+2698  0075 00            	dc.b	page(f_NonHandledInterrupt)
+2699  0076 0000          	dc.w	f_NonHandledInterrupt
+2700  0078 82            	dc.b	130
+2702  0079 00            	dc.b	page(f_NonHandledInterrupt)
+2703  007a 0000          	dc.w	f_NonHandledInterrupt
+2704  007c 82            	dc.b	130
+2706  007d 00            	dc.b	page(f_NonHandledInterrupt)
+2707  007e 0000          	dc.w	f_NonHandledInterrupt
+2758                     	xdef	__vectab
+2759                     	xref	__stext
+2760                     	xdef	f_ds_pulse_interrupt
+2761                     	xdef	f_Timer2_overflow_handler
+2762                     	xdef	f_Timer1_overflow_handler
+2763                     	xdef	f_I2C_Handler
+2764                     	xdef	f_SPI_Transmitted_Handler
+2765                     	xdef	f_UART_Resieved_Handler
+2766                     	xdef	f_Keys_switched_interrupt
+2767                     	xdef	f_NonHandledInterrupt
+2768                     	xref	_time_refresh
+2769                     	xref	_Timer2_Overflow
+2770                     	xref	_Timer1_Compare_1
+2771                     	xref	_Keys_switched
+2772                     	xref	_UART_Resieved
+2773                     	xref	_SPI_Transmitted
+2774                     	xref.b	c_x
+2775                     	xref.b	c_y
+2794                     	end

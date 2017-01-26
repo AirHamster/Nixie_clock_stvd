@@ -14,7 +14,7 @@ extern void Keys_switched(void);
 extern void DS_clock_handler (void);
 extern void Timer1_Compare_1(void);
 extern void Timer2_Overflow (void);
-
+extern void time_refresh(void);
 //extern void SPI_Transmitted (void);
 //extern void UART_Resieved (void);
 
@@ -76,6 +76,11 @@ struct interrupt_vector {
 	Timer2_Overflow();
 }
 
+@far @interrupt void ds_pulse_interrupt(void)
+{
+	time_refresh();
+}
+
 extern void _stext();     /* startup routine */
 
 struct interrupt_vector const _vectab[] = {
@@ -84,9 +89,9 @@ struct interrupt_vector const _vectab[] = {
 	{0x82, NonHandledInterrupt}, /* irq0  */
 	{0x82, NonHandledInterrupt}, /* irq1  */
 	{0x82, NonHandledInterrupt}, /* irq2  */
-	{0x82, NonHandledInterrupt}, /* irq3  */
+	{0x82, ds_pulse_interrupt}, /* irq3, PORTA  */
 	{0x82, NonHandledInterrupt}, /* irq4  */
-	{0x82, Keys_switched_interrupt}, /* irq5  */
+	{0x82, Keys_switched_interrupt}, /* irq5, PORTC*/
 	{0x82, NonHandledInterrupt}, /* irq6  */
 	{0x82, NonHandledInterrupt}, /* irq7  */
 	{0x82, NonHandledInterrupt}, /* irq8  */

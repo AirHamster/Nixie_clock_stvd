@@ -48,9 +48,9 @@ void Timer2_Overflow (void)
 	timers_int_off();
 	PA_ODR &= (0<<3);
 	
-	SPI_Send(temp2);
+	SPI_Send(k155_data);
 		
-	SPI_Send(temp3);
+	SPI_Send(lamp_number_data);
 	
 	PA_ODR |= (1<<3);
 	timers_int_on();
@@ -60,10 +60,7 @@ void Timer2_Overflow (void)
 void Timer1_Compare_1 (void)
 {
 	TIM1_SR1 = 0;
-  //lamp_number_out = lamp_number;                //выводим в регистры значени€ без точек
-	//PD_ODR = ~PD_ODR & 1<<3;;
-	
-	//погнали читать врем€
+		//погнали читать врем€
 	i2c_rd_reg(0xD0, 0, &seconds, 1); 	
 	i2c_rd_reg(0xD0, 1, &minutes, 1);
 	i2c_rd_reg(0xD0, 2, &hours, 1);
@@ -108,7 +105,7 @@ void timer2_setup(void)
  void Key_interrupt (void)
 {
   pins = PC_IDR;           //сохранили состо€ние порта
-  //timer2_start(0x0064);       //запустили таймер дл€ отфильтровки
+ 
 }
 
 

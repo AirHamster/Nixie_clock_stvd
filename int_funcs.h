@@ -37,7 +37,19 @@ void Keys_switched(void)
 	timer2_start(0xff);	
 }
 
-void DS_interrupt (void)
+void time_refresh (void)
 {
+		//погнали читать время
+	i2c_rd_reg(0xD0, 0, &seconds, 1); 	
+	i2c_rd_reg(0xD0, 1, &minutes, 1);
+	i2c_rd_reg(0xD0, 2, &hours, 1);
 	
+	//делим на декады и еденицы
+	seconds_decades = (seconds & 0xf0)>>4;
+	minutes_decades = (minutes & 0xf0)>>4;
+	hours_decades = (hours & 0xf0)>>4;
+	
+	seconds &= 0x0f;
+	minutes &= 0x0f;
+	hours &= 0x0f;
 }
