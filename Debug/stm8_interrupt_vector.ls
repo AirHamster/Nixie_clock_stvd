@@ -1,14 +1,14 @@
    1                     ; C Compiler for STM8 (COSMIC Software)
    2                     ; Parser V4.10.2 - 02 Nov 2011
    3                     ; Generator (Limited) V4.3.7 - 29 Nov 2011
-2213                     ; 28 @far @interrupt void NonHandledInterrupt (void)
-2213                     ; 29 {
+2213                     ; 24 @far @interrupt void NonHandledInterrupt (void)
+2213                     ; 25 {
 2214                     	switch	.text
 2215  0000               f_NonHandledInterrupt:
-2219                     ; 33 	return;
+2219                     ; 29 	return;
 2222  0000 80            	iret
-2246                     ; 36 @far @interrupt void Keys_switched_interrupt(void)
-2246                     ; 37 {
+2246                     ; 32 @far @interrupt void Keys_switched_interrupt(void)
+2246                     ; 33 {
 2247                     	switch	.text
 2248  0001               f_Keys_switched_interrupt:
 2250  0001 8a            	push	cc
@@ -22,9 +22,9 @@
 2258  000d 3b0002        	push	c_y+2
 2259  0010 be00          	ldw	x,c_y
 2260  0012 89            	pushw	x
-2263                     ; 38 	Keys_switched();
+2263                     ; 34 	Keys_switched();
 2265  0013 cd0000        	call	_Keys_switched
-2267                     ; 40 	return;
+2267                     ; 36 	return;
 2270  0016 85            	popw	x
 2271  0017 bf00          	ldw	c_y,x
 2272  0019 320002        	pop	c_y+2
@@ -32,8 +32,8 @@
 2274  001d bf00          	ldw	c_x,x
 2275  001f 320002        	pop	c_x+2
 2276  0022 80            	iret
-2300                     ; 49 @far @interrupt void UART_Resieved_Handler (void)
-2300                     ; 50 {	
+2300                     ; 39 @far @interrupt void UART_Resieved_Handler (void)
+2300                     ; 40 {	
 2301                     	switch	.text
 2302  0023               f_UART_Resieved_Handler:
 2304  0023 8a            	push	cc
@@ -47,9 +47,9 @@
 2312  002f 3b0002        	push	c_y+2
 2313  0032 be00          	ldw	x,c_y
 2314  0034 89            	pushw	x
-2317                     ; 52 		UART_Resieved();
+2317                     ; 42 		UART_Resieved();
 2319  0035 cd0000        	call	_UART_Resieved
-2321                     ; 54 	return;
+2321                     ; 44 	return;
 2324  0038 85            	popw	x
 2325  0039 bf00          	ldw	c_y,x
 2326  003b 320002        	pop	c_y+2
@@ -57,8 +57,8 @@
 2328  003f bf00          	ldw	c_x,x
 2329  0041 320002        	pop	c_x+2
 2330  0044 80            	iret
-2354                     ; 57 @far @interrupt void SPI_Transmitted_Handler (void)
-2354                     ; 58 {	
+2354                     ; 47 @far @interrupt void SPI_Transmitted_Handler (void)
+2354                     ; 48 {	
 2355                     	switch	.text
 2356  0045               f_SPI_Transmitted_Handler:
 2358  0045 8a            	push	cc
@@ -72,9 +72,9 @@
 2366  0051 3b0002        	push	c_y+2
 2367  0054 be00          	ldw	x,c_y
 2368  0056 89            	pushw	x
-2371                     ; 59 	SPI_Transmitted();
+2371                     ; 49 	SPI_Transmitted();
 2373  0057 cd0000        	call	_SPI_Transmitted
-2375                     ; 60 	return;
+2375                     ; 50 	return;
 2378  005a 85            	popw	x
 2379  005b bf00          	ldw	c_y,x
 2380  005d 320002        	pop	c_y+2
@@ -82,14 +82,14 @@
 2382  0061 bf00          	ldw	c_x,x
 2383  0063 320002        	pop	c_x+2
 2384  0066 80            	iret
-2406                     ; 62 @far @interrupt void I2C_Handler(void)
-2406                     ; 63 {
+2406                     ; 52 @far @interrupt void I2C_Handler(void)
+2406                     ; 53 {
 2407                     	switch	.text
 2408  0067               f_I2C_Handler:
-2412                     ; 65 	return;
+2412                     ; 54 	return;
 2415  0067 80            	iret
-2439                     ; 68 @far @interrupt void Timer1_overflow_handler(void)
-2439                     ; 69 {
+2439                     ; 57 @far @interrupt void Timer1_overflow_handler(void)
+2439                     ; 58 {
 2440                     	switch	.text
 2441  0068               f_Timer1_overflow_handler:
 2443  0068 8a            	push	cc
@@ -103,9 +103,9 @@
 2451  0074 3b0002        	push	c_y+2
 2452  0077 be00          	ldw	x,c_y
 2453  0079 89            	pushw	x
-2456                     ; 70 	Timer1_Compare_1();
+2456                     ; 59 	Timer1_Compare_1();
 2458  007a cd0000        	call	_Timer1_Compare_1
-2460                     ; 71 }
+2460                     ; 60 }
 2463  007d 85            	popw	x
 2464  007e bf00          	ldw	c_y,x
 2465  0080 320002        	pop	c_y+2
@@ -113,8 +113,8 @@
 2467  0084 bf00          	ldw	c_x,x
 2468  0086 320002        	pop	c_x+2
 2469  0089 80            	iret
-2493                     ; 74 @far @interrupt void Timer2_overflow_handler(void)
-2493                     ; 75 {
+2493                     ; 63 @far @interrupt void Timer2_overflow_handler(void)
+2493                     ; 64 {
 2494                     	switch	.text
 2495  008a               f_Timer2_overflow_handler:
 2497  008a 8a            	push	cc
@@ -128,9 +128,9 @@
 2505  0096 3b0002        	push	c_y+2
 2506  0099 be00          	ldw	x,c_y
 2507  009b 89            	pushw	x
-2510                     ; 76 	Timer2_Overflow();
+2510                     ; 65 	Timer2_Overflow();
 2512  009c cd0000        	call	_Timer2_Overflow
-2514                     ; 77 }
+2514                     ; 66 }
 2517  009f 85            	popw	x
 2518  00a0 bf00          	ldw	c_y,x
 2519  00a2 320002        	pop	c_y+2
@@ -138,8 +138,8 @@
 2521  00a6 bf00          	ldw	c_x,x
 2522  00a8 320002        	pop	c_x+2
 2523  00ab 80            	iret
-2546                     ; 79 @far @interrupt void ds_pulse_interrupt(void)
-2546                     ; 80 {
+2546                     ; 68 @far @interrupt void ds_pulse_interrupt(void)
+2546                     ; 69 {
 2547                     	switch	.text
 2548  00ac               f_ds_pulse_interrupt:
 2550  00ac 8a            	push	cc
@@ -153,9 +153,9 @@
 2558  00b8 3b0002        	push	c_y+2
 2559  00bb be00          	ldw	x,c_y
 2560  00bd 89            	pushw	x
-2563                     ; 81 	time_refresh();
+2563                     ; 70 	time_refresh();
 2565  00be cd0000        	call	_time_refresh
-2567                     ; 82 }
+2567                     ; 71 }
 2570  00c1 85            	popw	x
 2571  00c2 bf00          	ldw	c_y,x
 2572  00c4 320002        	pop	c_y+2

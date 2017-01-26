@@ -2,10 +2,8 @@
  *	Copyright (c) 2007 STMicroelectronics
  */
  #include "stm8s.h"
-//#include <stdio.h>
-//#include <stdlib.h>
  #include "iostm8s103.h"
-// #include "varables.h"
+
 extern void uart_setup(void);
 extern void SPI_Transmitted(void);
 extern void UART_Resieved(void);
@@ -15,8 +13,6 @@ extern void DS_clock_handler (void);
 extern void Timer1_Compare_1(void);
 extern void Timer2_Overflow (void);
 extern void time_refresh(void);
-//extern void SPI_Transmitted (void);
-//extern void UART_Resieved (void);
 
 typedef void @far (*interrupt_handler_t)(void);
 
@@ -40,12 +36,6 @@ struct interrupt_vector {
 	return;
 }
 
-//@far @interrupt void DS_clock_handler(void)
-//{
-	//DS_interrupt();
-//	return;
-//}
-
 @far @interrupt void UART_Resieved_Handler (void)
 {	
 		//temp = UART1_DR;
@@ -61,7 +51,6 @@ struct interrupt_vector {
 }
 @far @interrupt void I2C_Handler(void)
 {
-	//I2C_Event();
 	return;
 }
 
