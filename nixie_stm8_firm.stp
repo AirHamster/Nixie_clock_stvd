@@ -364,13 +364,3 @@ String.6.0=2016,11,21,23,23,16
 [Root.Include Files.c:\program files (x86)\cosmic\cxstm8_eval\hstm8\iostm8s103.h]
 ElemType=File
 PathName=c:\program files (x86)\cosmic\cxstm8_eval\hstm8\iostm8s103.h
-Next=Root.Include Files.int_funcs.h
-
-[Root.Include Files.int_funcs.h]
-ElemType=File
-PathName=int_funcs.h
-Next=Root.Include Files.varables.h
-
-[Root.Include Files.varables.h]
-ElemType=File
-PathName=varables.h

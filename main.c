@@ -6,18 +6,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "iostm8s103.h"
-#include "inc/varables.h" 
-#include "inc/uart.h"
+#include "varables.h" 
+#include "uart.h"
 
-#include "inc/keys.h"
-#include "inc/i2c.h"
-#include "inc/timers.h"
-#include "inc/functions.h"
+#include "keys.h"
+#include "i2c.h"
+#include "timers.h"
+#include "functions.h"
 
-#include "inc/spi.h"
-#include "inc/stm8s_itc.h"
+#include "spi.h"
+#include "stm8s_itc.h"
 
-#include "inc/int_funcs.h"
+#include "int_funcs.h"
 int main( void )
 {
 	//	Clock setup	================
@@ -54,7 +54,7 @@ int main( void )
   
 	
 	// 	I2C	setup	================
-		i2c_master_init(16000000, 100000);
+		i2c_master_init(16000000, 50000);
 	
 	//	Checking for running RTC	================	
 		timers_int_off();
@@ -76,11 +76,7 @@ int main( void )
 		timers_int_on();
 
 		_asm ("RIM");  //on interupts
-		
-	// buttons interrupts init
-		EXTI_CR1 = 0b00110011;//((1<<4) | (1<<0));//0x10;	//	external interrupts on ports À and Ñ on raising fronts 
-		EXTI_CR2 = 0b00000100;
-	
+			
 	//	main cycle
 	while(1)
 	{
