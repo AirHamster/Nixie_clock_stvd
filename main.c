@@ -22,6 +22,8 @@ int main( void )
 {
 	//	Clock setup	================
 		CLK_CKDIVR=0;                //	no dividers
+		
+		for (i = 0; i < 0xFFFF; i++);
 		CLK_PCKENR1=0xff;//0x8B;     //0b10001011;        //clocking for TIM1, UART1, SPI i I2C
 	
   //	Ports setup	================
