@@ -10,7 +10,7 @@ extern void UART_Resieved(void);
 extern void I2C_Event(void);
 extern void Keys_switched(void);
 extern void DS_clock_handler (void);
-extern void Timer1_Compare_1(void);
+extern void Timer1_overflow(void);
 extern void Timer2_Overflow (void);
 extern void time_refresh(void);
 
@@ -56,7 +56,7 @@ struct interrupt_vector {
 
 @far @interrupt void Timer1_overflow_handler(void)
 {
-	Timer1_Compare_1();
+	Timer1_overflow();
 }
 
 

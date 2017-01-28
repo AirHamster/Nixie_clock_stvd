@@ -103,8 +103,8 @@
 2451  0074 3b0002        	push	c_y+2
 2452  0077 be00          	ldw	x,c_y
 2453  0079 89            	pushw	x
-2456                     ; 59 	Timer1_Compare_1();
-2458  007a cd0000        	call	_Timer1_Compare_1
+2456                     ; 59 	Timer1_overflow();
+2458  007a cd0000        	call	_Timer1_overflow
 2460                     ; 60 }
 2463  007d 85            	popw	x
 2464  007e bf00          	ldw	c_y,x
@@ -273,7 +273,7 @@
 2767                     	xdef	f_NonHandledInterrupt
 2768                     	xref	_time_refresh
 2769                     	xref	_Timer2_Overflow
-2770                     	xref	_Timer1_Compare_1
+2770                     	xref	_Timer1_overflow
 2771                     	xref	_Keys_switched
 2772                     	xref	_UART_Resieved
 2773                     	xref	_SPI_Transmitted
