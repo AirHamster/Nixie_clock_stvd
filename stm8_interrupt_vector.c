@@ -13,7 +13,7 @@ extern void DS_clock_handler (void);
 extern void Timer1_overflow(void);
 extern void Timer2_Overflow (void);
 extern void time_refresh(void);
-
+extern void timer2_compare(void);
 typedef void @far (*interrupt_handler_t)(void);
 
 struct interrupt_vector {
@@ -69,7 +69,10 @@ struct interrupt_vector {
 {
 	time_refresh();
 }
-
+@far @interrupt void timer2_compare_handler (void)
+{
+	timer2_compare();
+}
 extern void _stext();     /* startup routine */
 
 struct interrupt_vector const _vectab[] = {
@@ -89,7 +92,7 @@ struct interrupt_vector const _vectab[] = {
 	{0x82, Timer1_overflow_handler}, /* irq11 */
 	{0x82, NonHandledInterrupt}, /* irq12 */
 	{0x82, Timer2_overflow_handler}, /* irq13 */
-	{0x82, NonHandledInterrupt}, /* irq14 */
+	{0x82, timer2_compare_handler}, /* irq14 */
 	{0x82, NonHandledInterrupt}, /* irq15 */
 	{0x82, NonHandledInterrupt}, /* irq16 */
 	{0x82, NonHandledInterrupt}, /* irq17 */

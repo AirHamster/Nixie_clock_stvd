@@ -13,7 +13,7 @@ FormatWatch2=4
 FormatViewType2=1
 FormatViewAddress2=1
 WatchRWOnFlyTab2=0
-WatchVariables3=lamp_number!0;lamp_number_data!4;k155_data!0;
+WatchVariables3=lamp_number!0;lamp_number_data!4;k155_data!0;dots_on!0;dots_upd!0;TIM2_CCR1H!0;TIM2_CCR1L!0;
 FormatWatch3=0
 FormatViewType3=1
 FormatViewAddress3=1
@@ -30,13 +30,13 @@ ActiveTab=2
 HexaTimeDisplay=1
 HexaInstrTimeDisplay=1
 [DebugState_v1-Debug.AddOn.St7PeripheralRegister]
-DisplayFormat=3
+DisplayFormat=1
 ShowPeriphAddress=0
 ShowRegisterAddress=1
 [DebugState_v1-Debug.AddOn.St7McuIcdConf]
 McuName=STM8S003F3
 [DebugState_v1-Debug.AddOn.IcdBreak]
-ICDBreak0=CR:0x00000000,BK1:0x00ffffff,BK2:0x00ffffff
+ICDBreak0=CR:0x00000006,BK1:0x00000020,BK2:0x0000000f
 [DebugState_v1-Debug.AddOn.SteppingMode]
 Mode=hardware
 [DebugState_v1-Debug.AddOn.ST7LoadSaveConfiguration]

@@ -1,6 +1,6 @@
 void spi_setup(void)
  {
-    SPI_CR1= 0b01110100;//0x7C;       //this
+    SPI_CR1= 0b01000100;//0x7C;       //this
 		// реверсим порядок отправки байт
  }
 

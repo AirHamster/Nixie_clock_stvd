@@ -18,7 +18,7 @@ volatile uint8_t dots = 0b00010000;	// dots mask
 volatile uint8_t k155_data; 
 volatile uint8_t lamp_number_data;
 volatile uint16_t dots_upd = 8000;
-volatile dots_on = 0;
+volatile dots_on = 1;
 //	info from rtc
 volatile uint8_t fresh_hours_dec, fresh_hours, fresh_min_dec, fresh_min, fresh_sec_dec, fresh_sec, timeset;
 

@@ -49,18 +49,18 @@ int main( void )
 		uart_send('h');
 		
   //	Timers initialization ===========
-    timer1_setup( 65500,0xffff);//	freq in hz and top value
+    timer1_setup(65500,0xffff);//	freq in hz and top value
 		timer2_setup();
 		timer1_start();
 		timer2_start(TIM2_TOP);
   
 	
 	// 	I2C	setup	================
-		i2c_master_init(16000000, 50000);
+		i2c_master_init(16000000, 100000);
 	
 	//	Checking for running RTC	================	
-		timers_int_off();
 		
+		timers_int_off();
 		i2c_rd_reg(ds_address, 7, &temp, 1);
 	if (temp != 0b10010000)	// if OUT and SWQ == 0
 		{
