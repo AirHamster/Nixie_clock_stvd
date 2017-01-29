@@ -8,7 +8,7 @@ void UART_Resieved (void)
 
 void SPI_Transmitted(void)
 {
-	spi_send(temp3);
+	spi_send2();
 }
 
 void I2C_Event(void)

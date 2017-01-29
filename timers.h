@@ -1,6 +1,6 @@
 
 void i2c_start(uint8_t, uint8_t, uint8_t);
-void spi_send(uint8_t);
+void spi_send(void);
 void timers_int_off(void);
 void timers_int_on(void);
 void time_refresh(void);
@@ -48,14 +48,13 @@ void timer2_start(uint16_t top_val)
 void Timer2_Overflow (void)
 {
 	TIM2_SR1 &= ~TIM2_SR1_UIF;
-	
-			timers_int_off();
-			PA_ODR &= (0<<3);
-			spi_send(kostil_k155(k155_data));
-			spi_send(lamp_number_data | dots);
-			while((SPI_SR & SPI_SR_BSY) != 0);
-			PA_ODR |= (1<<3);
-			timers_int_on();
+		lamp_number_data |= dots;
+		//	timers_int_off();
+			//PA_ODR &= (0<<3);
+			spi_send();
+			//while((SPI_SR & SPI_SR_BSY) != 0);
+			//PA_ODR |= (1<<3);
+			//timers_int_on();
 }
 
 void Timer1_overflow (void){
@@ -105,6 +104,7 @@ void timer2_compare(void)
 			lamp_number = 0;
 			
 		}
+
 	schetchik = 0;
 }
 	else 
@@ -113,7 +113,7 @@ void timer2_compare(void)
 		schetchik = 1;
 	}
 	
-	
+
 	if (dots_on == 1){
 		if (dots_upd < 10000){
 			dots_upd +=10;
@@ -129,13 +129,16 @@ void timer2_compare(void)
 				
 			}
 		} 
-			timers_int_off();
-			PA_ODR &= (0<<3);
-			spi_send(kostil_k155(k155_data));
-			spi_send(lamp_number_data & ~dots);
-			while((SPI_SR & SPI_SR_BSY) != 0);
-			PA_ODR |= (1<<3);
-			timers_int_on();
+		//	timers_int_off();
+	//		PA_ODR &= (0<<3);
+		k155_data = kostil_k155(k155_data);
+		lamp_number_data &= ~dots;
+		spi_send();
+			
+			//spi_send(lamp_number_data & ~dots);
+		//	while((SPI_SR & SPI_SR_BSY) != 0);
+		//	PA_ODR |= (1<<3);
+	//		timers_int_on();
 	return;
 }
 

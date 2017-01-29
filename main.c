@@ -51,8 +51,7 @@ int main( void )
   //	Timers initialization ===========
     timer1_setup(65500,0xffff);//	freq in hz and top value
 		timer2_setup();
-		timer1_start();
-		timer2_start(TIM2_TOP);
+
   
 	
 	// 	I2C	setup	================
@@ -76,7 +75,8 @@ int main( void )
 		i2c_wr_reg(ds_address, 0, &temp, 1);
 	}
 		timers_int_on();
-
+		timer1_start();
+		timer2_start(TIM2_TOP);
 		_asm ("RIM");  //on interupts
 			
 	//	main cycle
