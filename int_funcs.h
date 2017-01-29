@@ -40,3 +40,15 @@ void time_refresh (void)
 	minutes = fresh_min & 0x0f;
 	hours = fresh_hours & 0x0f;
 }
+
+void digits_shift_init (void)
+{
+	//divide into tens and units
+	seconds_tens = 0;
+	minutes_tens = 0;
+	hours_tens = 0;
+	
+	seconds = 0;
+	minutes = 0;
+	hours = 0;
+}

@@ -11,6 +11,7 @@ extern void I2C_Event(void);
 extern void Keys_switched(void);
 extern void DS_clock_handler (void);
 extern void Timer1_overflow(void);
+extern void timer1_compare(void);
 extern void Timer2_Overflow (void);
 extern void time_refresh(void);
 extern void timer2_compare(void);
@@ -73,6 +74,10 @@ struct interrupt_vector {
 {
 	timer2_compare();
 }
+@far @interrupt void timer1_compare_handler(void)
+{
+	timer1_compare();
+}
 extern void _stext();     /* startup routine */
 
 struct interrupt_vector const _vectab[] = {
@@ -90,7 +95,7 @@ struct interrupt_vector const _vectab[] = {
 	{0x82, NonHandledInterrupt}, /* irq9  */
 	{0x82, SPI_Transmitted_Handler}, /* irq10 */
 	{0x82, Timer1_overflow_handler}, /* irq11 */
-	{0x82, NonHandledInterrupt}, /* irq12 */
+	{0x82, timer1_compare_handler}, /* irq12 */
 	{0x82, Timer2_overflow_handler}, /* irq13 */
 	{0x82, timer2_compare_handler}, /* irq14 */
 	{0x82, NonHandledInterrupt}, /* irq15 */

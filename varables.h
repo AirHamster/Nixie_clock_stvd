@@ -12,7 +12,7 @@ typedef enum {
 
 // TODO: заменить все переменные состояний на битовые структуры
 volatile uint8_t lamp_number = 0;      //	lamp number 1-4
-volatile uint8_t dots = 0b00010000;	// dots mask
+volatile uint8_t dots = 0;//0b00010000;	// dots mask
 
 //	spi data:
 volatile uint8_t k155_data; 
@@ -41,6 +41,8 @@ volatile uint8_t schetchik2 = 0;
 //i2c peremennie
 uint8_t ds_cr = 0b10010000;
 
+volatile uint8_t shifting;
+uint16_t tim1comp = 5950;
 #define  ds_address 0xD0
 #define TIM2_TOP 0x3E80 //0x6D60//0x3E80 --1kHz
 #define time 1

@@ -4,6 +4,7 @@ void spi_send(uint8_t);
 void timers_int_off(void);
 void timers_int_on(void);
 void time_refresh(void);
+void 		digits_shift_init(void);
 uint8_t kostil_k155(uint8_t);
 
 // 1Hz timer
@@ -33,6 +34,22 @@ void timer2_setup(void)
     TIM2_ARRL = 0;
  }
  
+ void timer4_setup(void)
+ {
+	 TIM4_CR1 |= TIM4_CR1_ARPE;
+	 TIM4_IER |= TIM4_IER_UIE;
+ }
+ 
+ void timer1_comp_start(uint16_t val)
+ {
+		TIM1_IER |= TIM1_IER_CC1IE;
+		TIM1_CCR1H = val >> 8;
+		TIM1_CCR1L = val & 0xFF;
+ }
+ void timer1_comp_stop(void){
+	 TIM1_IER &= ~TIM1_IER_CC1IE;
+ }
+ 
  void timer1_start(void)
  {
    TIM1_CR1 |= TIM1_CR1_CEN; //Запускаем таймер
@@ -59,7 +76,7 @@ void Timer2_Overflow (void)
 }
 
 void Timer1_overflow (void){
-	TIM1_SR1 = 0;
+	TIM1_SR1 &= ~TIM1_SR1_UIF;
 	if (dots_on == 0){
 		dots_on = 1;
 	//	dots = 0b00010000;
@@ -71,8 +88,35 @@ void Timer1_overflow (void){
 	//dots = ~dots;
 	//dots &= 0b00010000;
 	time_refresh();
+	if ((minutes == 0) && (shifting == 0)){
+		shifting = 1;
+		tim1comp = 5950;
+		digits_shift_init();
+		timer1_comp_start(tim1comp);
+	}
+	if (minutes != 0 && minutes != 5){
+		shifting = 0;
+	}
 }
 
+void timer1_compare(void){
+	TIM1_SR1 &= ~TIM1_SR1_CC1IF;
+	if(hours < 9){
+	seconds_tens++;
+	minutes_tens++;
+	hours_tens++;
+	
+	seconds++;
+	minutes++;
+	hours++;
+	tim1comp += 5950;
+	timer1_comp_start(tim1comp);
+	}
+	else {
+		timer1_comp_stop();
+	}
+}
+	
 void timer2_compare(void)
 {
 	TIM2_SR1 &= ~TIM2_SR1_CC1IF;
@@ -132,6 +176,7 @@ void timer2_compare(void)
 			timers_int_off();
 			PA_ODR &= (0<<3);
 			spi_send(kostil_k155(k155_data));
+			//spi_send(kostil_k155(temp2));
 			spi_send(lamp_number_data & ~dots);
 			while((SPI_SR & SPI_SR_BSY) != 0);
 			PA_ODR |= (1<<3);
