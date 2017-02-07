@@ -50,14 +50,14 @@
 2772  0019               _uart_send:
 2774  0019 88            	push	a
 2775       00000000      OFST:	set	0
-2778                     ; 14 	 temp =msg;
+2778                     ; 14 		temp =msg;
 2780  001a b703          	ld	_temp,a
 2782  001c               L7771:
-2783                     ; 15 	 while((UART1_SR & 0x80) == 0x00);
+2783                     ; 15 		while((UART1_SR & 0x80) == 0x00);
 2785  001c c65230        	ld	a,_UART1_SR
 2786  001f a580          	bcp	a,#128
 2787  0021 27f9          	jreq	L7771
-2788                     ; 16 	 UART1_DR = msg;
+2788                     ; 16 		UART1_DR = msg;
 2790  0023 7b01          	ld	a,(OFST+1,sp)
 2791  0025 c75231        	ld	_UART1_DR,a
 2792                     ; 17  }
@@ -69,16 +69,16 @@
 2844  002a               _uart_routine:
 2846  002a 88            	push	a
 2847       00000000      OFST:	set	0
-2850                     ; 21 	 temp2 = data - 0x30;
+2850                     ; 21 		temp2 = data - 0x30;
 2852  002b a030          	sub	a,#48
 2853  002d b708          	ld	_temp2,a
-2854                     ; 22 	 if (timeset != 0 && timeset <= 5)
+2854                     ; 22 		if (timeset != 0 && timeset <= 5){
 2856  002f 3d0f          	tnz	_timeset
 2857  0031 2719          	jreq	L1202
 2859  0033 b60f          	ld	a,_timeset
 2860  0035 a106          	cp	a,#6
 2861  0037 2413          	jruge	L1202
-2862                     ; 24 		* fresh_data_pointer-- = data-0x30;
+2862                     ; 23 			* fresh_data_pointer-- = data-0x30;
 2864  0039 7b01          	ld	a,(OFST+1,sp)
 2865  003b a030          	sub	a,#48
 2866  003d be05          	ldw	x,_fresh_data_pointer
@@ -86,86 +86,86 @@
 2868  0042 bf05          	ldw	_fresh_data_pointer,x
 2869  0044 1c0001        	addw	x,#1
 2870  0047 f7            	ld	(x),a
-2871                     ; 25 		 timeset++;
+2871                     ; 24 			timeset++;
 2873  0048 3c0f          	inc	_timeset
-2874                     ; 26 		 return ;
+2874                     ; 25 			return ;
 2877  004a 84            	pop	a
 2878  004b 81            	ret
 2879  004c               L1202:
-2880                     ; 28 	 if (timeset == 6)
+2880                     ; 27 		if (timeset == 6){
 2882  004c b60f          	ld	a,_timeset
 2883  004e a106          	cp	a,#6
 2884  0050 2616          	jrne	L3202
-2885                     ; 30 		 *fresh_data_pointer = data-0x30;
+2885                     ; 28 			*fresh_data_pointer = data-0x30;
 2887  0052 7b01          	ld	a,(OFST+1,sp)
 2888  0054 a030          	sub	a,#48
 2889  0056 92c705        	ld	[_fresh_data_pointer.w],a
-2890                     ; 31 		 timeset = 0;
+2890                     ; 29 			timeset = 0;
 2892  0059 3f0f          	clr	_timeset
-2893                     ; 32 		 time_write();
-2895  005b cd050c        	call	_time_write
-2897                     ; 33 		 uart_send('O');
+2893                     ; 30 			time_write();
+2895  005b cd04c4        	call	_time_write
+2897                     ; 31 			uart_send('O');
 2899  005e a64f          	ld	a,#79
 2900  0060 adb7          	call	_uart_send
-2902                     ; 34 		 uart_send('K');
+2902                     ; 32 			uart_send('K');
 2904  0062 a64b          	ld	a,#75
 2905  0064 adb3          	call	_uart_send
-2907                     ; 35 		 return;
+2907                     ; 33 			return;
 2910  0066 84            	pop	a
 2911  0067 81            	ret
 2912  0068               L3202:
-2913                     ; 38 	 if (data == 's')
+2913                     ; 36 		if (data == 's'){
 2915  0068 7b01          	ld	a,(OFST+1,sp)
 2916  006a a173          	cp	a,#115
 2917  006c 260b          	jrne	L5202
-2918                     ; 40 			timeset = 1;
+2918                     ; 37 			timeset = 1;
 2920  006e 3501000f      	mov	_timeset,#1
-2921                     ; 41 			fresh_data_pointer = &fresh_hours_dec;
+2921                     ; 38 			fresh_data_pointer = &fresh_hours_dec;
 2923  0072 ae0015        	ldw	x,#_fresh_hours_dec
 2924  0075 bf05          	ldw	_fresh_data_pointer,x
-2925                     ; 42 			return;
+2925                     ; 39 			return;
 2928  0077 84            	pop	a
 2929  0078 81            	ret
 2930  0079               L5202:
-2931                     ; 46 		if (data == 't')
+2931                     ; 43 		if (data == 't'){
 2933  0079 7b01          	ld	a,(OFST+1,sp)
 2934  007b a174          	cp	a,#116
 2935  007d 2635          	jrne	L7202
-2936                     ; 48 			uart_send(hours_tens+0x30);
+2936                     ; 44 			uart_send(hours_tens+0x30);
 2938  007f b609          	ld	a,_hours_tens
 2939  0081 ab30          	add	a,#48
 2940  0083 ad94          	call	_uart_send
-2942                     ; 49 			uart_send(hours+0x30);
+2942                     ; 45 			uart_send(hours+0x30);
 2944  0085 b60e          	ld	a,_hours
 2945  0087 ab30          	add	a,#48
 2946  0089 ad8e          	call	_uart_send
-2948                     ; 50 			uart_send(':');	
+2948                     ; 46 			uart_send(':');	
 2950  008b a63a          	ld	a,#58
 2951  008d ad8a          	call	_uart_send
-2953                     ; 51 			uart_send(minutes_tens+0x30);
+2953                     ; 47 			uart_send(minutes_tens+0x30);
 2955  008f b60a          	ld	a,_minutes_tens
 2956  0091 ab30          	add	a,#48
 2957  0093 ad84          	call	_uart_send
-2959                     ; 52 			uart_send(minutes+0x30);
+2959                     ; 48 			uart_send(minutes+0x30);
 2961  0095 b60d          	ld	a,_minutes
 2962  0097 ab30          	add	a,#48
 2963  0099 cd0019        	call	_uart_send
-2965                     ; 53 			uart_send(':'); 
+2965                     ; 49 			uart_send(':'); 
 2967  009c a63a          	ld	a,#58
 2968  009e cd0019        	call	_uart_send
-2970                     ; 54 			uart_send(seconds_tens+0x30);
+2970                     ; 50 			uart_send(seconds_tens+0x30);
 2972  00a1 b60b          	ld	a,_seconds_tens
 2973  00a3 ab30          	add	a,#48
 2974  00a5 cd0019        	call	_uart_send
-2976                     ; 55 			uart_send(seconds+0x30);
+2976                     ; 51 			uart_send(seconds+0x30);
 2978  00a8 b60c          	ld	a,_seconds
 2979  00aa ab30          	add	a,#48
 2980  00ac cd0019        	call	_uart_send
-2982                     ; 56 			uart_send(0x0A);
+2982                     ; 52 			uart_send(0x0A);
 2984  00af a60a          	ld	a,#10
 2985  00b1 cd0019        	call	_uart_send
 2987  00b4               L7202:
-2988                     ; 58 	}
+2988                     ; 54 }
 2991  00b4 84            	pop	a
 2992  00b5 81            	ret
 3034                     ; 1  void Key_interrupt (void)
@@ -537,14 +537,14 @@
 3791  02e1 4f            	clr	a
 3794  02e2 85            	popw	x
 3795  02e3 81            	ret
-3862                     ; 11 void timer1_setup(uint16_t tim_freq, uint16_t top)
-3862                     ; 12  {
+3862                     ; 10 void timer1_setup(uint16_t tim_freq, uint16_t top)
+3862                     ; 11  {
 3863                     	switch	.text
 3864  02e4               _timer1_setup:
 3866  02e4 89            	pushw	x
 3867  02e5 5204          	subw	sp,#4
 3868       00000004      OFST:	set	4
-3871                     ; 13   TIM1_PSCRH = CLOCK_FREQ/tim_freq >> 8;//(prescaler) >> 8;								// TODO: изучить генерируемый код!!!!
+3871                     ; 12   TIM1_PSCRH = CLOCK_FREQ/tim_freq >> 8;//(prescaler) >> 8;								// TODO: изучить генерируемый код!!!!
 3873  02e7 cd0000        	call	c_uitolx
 3875  02ea 96            	ldw	x,sp
 3876  02eb 1c0001        	addw	x,#OFST-3
@@ -560,7 +560,7 @@
 3888  0304 cd0000        	call	c_lrsh
 3890  0307 b603          	ld	a,c_lreg+3
 3891  0309 c75260        	ld	_TIM1_PSCRH,a
-3892                     ; 14   TIM1_PSCRL = CLOCK_FREQ/tim_freq & 0xFF;//(prescaler)& 0xFF; // 16 divider
+3892                     ; 13   TIM1_PSCRL = CLOCK_FREQ/tim_freq & 0xFF;//(prescaler)& 0xFF; // 16 divider
 3894  030c 1e05          	ldw	x,(OFST+1,sp)
 3895  030e cd0000        	call	c_uitolx
 3897  0311 96            	ldw	x,sp
@@ -578,853 +578,814 @@
 3911  032d 3f00          	clr	c_lreg
 3912  032f b603          	ld	a,c_lreg+3
 3913  0331 c75261        	ld	_TIM1_PSCRL,a
-3914                     ; 15   TIM1_ARRH = (top) >> 8; //	overflow frequency = 16М / 8 / 1000 = 2000 Гц
+3914                     ; 14   TIM1_ARRH = (top) >> 8; //	overflow frequency = 16М / 8 / 1000 = 2000 Гц
 3916  0334 7b09          	ld	a,(OFST+5,sp)
 3917  0336 c75262        	ld	_TIM1_ARRH,a
-3918                     ; 16   TIM1_ARRL = (top)& 0xFF;
+3918                     ; 15   TIM1_ARRL = (top)& 0xFF;
 3920  0339 7b0a          	ld	a,(OFST+6,sp)
 3921  033b a4ff          	and	a,#255
 3922  033d c75263        	ld	_TIM1_ARRL,a
-3923                     ; 18   TIM1_CR1 |= TIM1_CR1_URS; //only overflow int
+3923                     ; 17   TIM1_CR1 |= TIM1_CR1_URS; //only overflow int
 3925  0340 72145250      	bset	_TIM1_CR1,#2
-3926                     ; 19   TIM1_EGR |= TIM1_EGR_UG;  //call Update Event
+3926                     ; 18   TIM1_EGR |= TIM1_EGR_UG;  //call Update Event
 3928  0344 72105257      	bset	_TIM1_EGR,#0
-3929                     ; 20   TIM1_IER |= TIM1_IER_UIE; //int enable
+3929                     ; 19   TIM1_IER |= TIM1_IER_UIE; //int enable
 3931  0348 72105254      	bset	_TIM1_IER,#0
-3932                     ; 21  }
+3932                     ; 20  }
 3935  034c 5b06          	addw	sp,#6
 3936  034e 81            	ret
-3967                     ; 24 void timer2_setup(void)
-3967                     ; 25  {
+3967                     ; 23 void timer2_setup(void)
+3967                     ; 24  {
 3968                     	switch	.text
 3969  034f               _timer2_setup:
-3973                     ; 27 		TIM2_CCR1H = dots_upd >> 8;
+3973                     ; 26 		TIM2_CCR1H = dots_upd >> 8;
 3975  034f 5500025311    	mov	_TIM2_CCR1H,_dots_upd
-3976                     ; 28 		TIM2_CCR1L = dots_upd & 0xFF;
+3976                     ; 27 		TIM2_CCR1L = dots_upd & 0xFF;
 3978  0354 b603          	ld	a,_dots_upd+1
 3979  0356 a4ff          	and	a,#255
 3980  0358 c75312        	ld	_TIM2_CCR1L,a
-3981                     ; 29 		TIM2_CCMR1 |= TIM2_CCMR_OCxPE;	//preload
+3981                     ; 28 		TIM2_CCMR1 |= TIM2_CCMR_OCxPE;	//preload
 3983  035b 72165307      	bset	_TIM2_CCMR1,#3
-3984                     ; 31     TIM2_IER |=	TIM2_IER_CC1IE | TIM2_IER_UIE;	//overflow int and compare 1   
+3984                     ; 30     TIM2_IER |=	TIM2_IER_CC1IE | TIM2_IER_UIE;	//overflow int and compare 1   
 3986  035f c65303        	ld	a,_TIM2_IER
 3987  0362 aa03          	or	a,#3
 3988  0364 c75303        	ld	_TIM2_IER,a
-3989                     ; 32     TIM2_PSCR = 0;
+3989                     ; 31     TIM2_PSCR = 0;
 3991  0367 725f530e      	clr	_TIM2_PSCR
-3992                     ; 33     TIM2_ARRH = 0;
+3992                     ; 32     TIM2_ARRH = 0;
 3994  036b 725f530f      	clr	_TIM2_ARRH
-3995                     ; 34     TIM2_ARRL = 0;
+3995                     ; 33     TIM2_ARRL = 0;
 3997  036f 725f5310      	clr	_TIM2_ARRL
-3998                     ; 35  }
+3998                     ; 34  } 
 4001  0373 81            	ret
-4026                     ; 37  void timer4_setup(void)
-4026                     ; 38  {
-4027                     	switch	.text
-4028  0374               _timer4_setup:
-4032                     ; 39 	 TIM4_CR1 |= TIM4_CR1_ARPE;
-4034  0374 721e5340      	bset	_TIM4_CR1,#7
-4035                     ; 40 	 TIM4_IER |= TIM4_IER_UIE;
-4037  0378 72105343      	bset	_TIM4_IER,#0
-4038                     ; 41  }
-4041  037c 81            	ret
-4078                     ; 43  void timer1_comp_start(uint16_t val)
-4078                     ; 44  {
-4079                     	switch	.text
-4080  037d               _timer1_comp_start:
-4084                     ; 45 		TIM1_IER |= TIM1_IER_CC1IE;
-4086  037d 72125254      	bset	_TIM1_IER,#1
-4087                     ; 46 		TIM1_CCR1H = val >> 8;
-4089  0381 9e            	ld	a,xh
-4090  0382 c75265        	ld	_TIM1_CCR1H,a
-4091                     ; 47 		TIM1_CCR1L = val & 0xFF;
-4093  0385 9f            	ld	a,xl
-4094  0386 a4ff          	and	a,#255
-4095  0388 c75266        	ld	_TIM1_CCR1L,a
-4096                     ; 48  }
-4099  038b 81            	ret
-4123                     ; 49  void timer1_comp_stop(void){
-4124                     	switch	.text
-4125  038c               _timer1_comp_stop:
-4129                     ; 50 	 TIM1_IER &= ~TIM1_IER_CC1IE;
-4131  038c 72135254      	bres	_TIM1_IER,#1
-4132                     ; 51  }
-4135  0390 81            	ret
-4159                     ; 53  void timer1_start(void)
-4159                     ; 54  {
-4160                     	switch	.text
-4161  0391               _timer1_start:
-4165                     ; 55    TIM1_CR1 |= TIM1_CR1_CEN; //Запускаем таймер
-4167  0391 72105250      	bset	_TIM1_CR1,#0
-4168                     ; 56  }
-4171  0395 81            	ret
-4208                     ; 58 void timer2_start(uint16_t top_val)
-4208                     ; 59 {
-4209                     	switch	.text
-4210  0396               _timer2_start:
-4214                     ; 60   TIM2_ARRH =top_val >>8;
-4216  0396 9e            	ld	a,xh
-4217  0397 c7530f        	ld	_TIM2_ARRH,a
-4218                     ; 61   TIM2_ARRL =top_val & 0xFF;
-4220  039a 9f            	ld	a,xl
-4221  039b a4ff          	and	a,#255
-4222  039d c75310        	ld	_TIM2_ARRL,a
-4223                     ; 62   TIM2_CR1 |= TIM2_CR1_CEN;
-4225  03a0 72105300      	bset	_TIM2_CR1,#0
-4226                     ; 63 }
-4229  03a4 81            	ret
-4262                     ; 65 void Timer2_Overflow (void)
-4262                     ; 66 {
-4263                     	switch	.text
-4264  03a5               _Timer2_Overflow:
-4268                     ; 67 	TIM2_SR1 &= ~TIM2_SR1_UIF;
-4270  03a5 72115304      	bres	_TIM2_SR1,#0
-4271                     ; 69 			timers_int_off();
-4273  03a9 cd04f6        	call	_timers_int_off
-4275                     ; 70 			PA_ODR &= (0<<3);
-4277  03ac 725f5000      	clr	_PA_ODR
-4278                     ; 71 			spi_send(kostil_k155(k155_data));
-4280  03b0 b617          	ld	a,_k155_data
-4281  03b2 cd055c        	call	_kostil_k155
-4283  03b5 cd0583        	call	_spi_send
-4285                     ; 72 			spi_send(lamp_number_data | dots);
-4287  03b8 b616          	ld	a,_lamp_number_data
-4288  03ba ba01          	or	a,_dots
-4289  03bc cd0583        	call	_spi_send
-4292  03bf               L3062:
-4293                     ; 73 			while((SPI_SR & SPI_SR_BSY) != 0);
-4295  03bf c65203        	ld	a,_SPI_SR
-4296  03c2 a580          	bcp	a,#128
-4297  03c4 26f9          	jrne	L3062
-4298                     ; 74 			PA_ODR |= (1<<3);
-4300  03c6 72165000      	bset	_PA_ODR,#3
-4301                     ; 75 			timers_int_on();
-4303  03ca cd04ff        	call	_timers_int_on
-4305                     ; 76 }
-4308  03cd 81            	ret
-4339                     ; 78 void Timer1_overflow (void){
-4340                     	switch	.text
-4341  03ce               _Timer1_overflow:
-4345                     ; 79 	TIM1_SR1 &= ~TIM1_SR1_UIF;
-4347  03ce 72115255      	bres	_TIM1_SR1,#0
-4348                     ; 80 	if (dots_on == 0){
-4350  03d2 be04          	ldw	x,_dots_on
-4351  03d4 2607          	jrne	L7162
-4352                     ; 81 		dots_on = 1;
-4354  03d6 ae0001        	ldw	x,#1
-4355  03d9 bf04          	ldw	_dots_on,x
-4357  03db 2003          	jra	L1262
-4358  03dd               L7162:
-4359                     ; 85 		dots_on = 0;
-4361  03dd 5f            	clrw	x
-4362  03de bf04          	ldw	_dots_on,x
-4363  03e0               L1262:
-4364                     ; 90 	time_refresh();
-4366  03e0 cd05b3        	call	_time_refresh
-4368                     ; 91 	if ((minutes == 0) && (shifting == 0)){
-4370  03e3 3d0d          	tnz	_minutes
-4371  03e5 2614          	jrne	L3262
-4373  03e7 3d02          	tnz	_shifting
-4374  03e9 2610          	jrne	L3262
-4375                     ; 92 		shifting = 1;
-4377  03eb 35010002      	mov	_shifting,#1
-4378                     ; 93 		tim1comp = 5950;
-4380  03ef ae173e        	ldw	x,#5950
-4381  03f2 bf0f          	ldw	_tim1comp,x
-4382                     ; 94 		digits_shift_init();
-4384  03f4 cd0611        	call	_digits_shift_init
-4386                     ; 95 		timer1_comp_start(tim1comp);
-4388  03f7 be0f          	ldw	x,_tim1comp
-4389  03f9 ad82          	call	_timer1_comp_start
-4391  03fb               L3262:
-4392                     ; 97 	if (minutes != 0 && minutes != 5){
-4394  03fb 3d0d          	tnz	_minutes
-4395  03fd 2708          	jreq	L5262
-4397  03ff b60d          	ld	a,_minutes
-4398  0401 a105          	cp	a,#5
-4399  0403 2702          	jreq	L5262
-4400                     ; 98 		shifting = 0;
-4402  0405 3f02          	clr	_shifting
-4403  0407               L5262:
-4404                     ; 100 }
-4407  0407 81            	ret
-4440                     ; 102 void timer1_compare(void){
-4441                     	switch	.text
-4442  0408               _timer1_compare:
-4446                     ; 103 	TIM1_SR1 &= ~TIM1_SR1_CC1IF;
-4448  0408 72135255      	bres	_TIM1_SR1,#1
-4449                     ; 104 	if(hours < 9){
-4451  040c b60e          	ld	a,_hours
-4452  040e a109          	cp	a,#9
-4453  0410 241a          	jruge	L7362
-4454                     ; 105 	seconds_tens++;
-4456  0412 3c0b          	inc	_seconds_tens
-4457                     ; 106 	minutes_tens++;
-4459  0414 3c0a          	inc	_minutes_tens
-4460                     ; 107 	hours_tens++;
-4462  0416 3c09          	inc	_hours_tens
-4463                     ; 109 	seconds++;
-4465  0418 3c0c          	inc	_seconds
-4466                     ; 110 	minutes++;
-4468  041a 3c0d          	inc	_minutes
-4469                     ; 111 	hours++;
-4471  041c 3c0e          	inc	_hours
-4472                     ; 112 	tim1comp += 5950;
-4474  041e be0f          	ldw	x,_tim1comp
-4475  0420 1c173e        	addw	x,#5950
-4476  0423 bf0f          	ldw	_tim1comp,x
-4477                     ; 113 	timer1_comp_start(tim1comp);
-4479  0425 be0f          	ldw	x,_tim1comp
-4480  0427 cd037d        	call	_timer1_comp_start
-4483  042a 2003          	jra	L1462
-4484  042c               L7362:
-4485                     ; 116 		timer1_comp_stop();
-4487  042c cd038c        	call	_timer1_comp_stop
-4489  042f               L1462:
-4490                     ; 118 }
-4493  042f 81            	ret
-4536                     ; 120 void timer2_compare(void)
-4536                     ; 121 {
-4537                     	switch	.text
-4538  0430               _timer2_compare:
-4542                     ; 122 	TIM2_SR1 &= ~TIM2_SR1_CC1IF;
-4544  0430 72135304      	bres	_TIM2_SR1,#1
-4545                     ; 124 	if (schetchik == 1)
-4547  0434 b60a          	ld	a,_schetchik
-4548  0436 a101          	cp	a,#1
-4549  0438 2658          	jrne	L3662
-4550                     ; 126 	switch (lamp_number)
-4552  043a b600          	ld	a,_lamp_number
-4554                     ; 139 	break;
-4555  043c 4d            	tnz	a
-4556  043d 270b          	jreq	L3462
-4557  043f 4a            	dec	a
-4558  0440 270d          	jreq	L5462
-4559  0442 4a            	dec	a
-4560  0443 270f          	jreq	L7462
-4561  0445 4a            	dec	a
-4562  0446 2711          	jreq	L1562
-4563  0448 2012          	jra	L7662
-4564  044a               L3462:
-4565                     ; 128 	case 0:
-4565                     ; 129 	k155_data = hours_tens; 
-4567  044a 450917        	mov	_k155_data,_hours_tens
-4568                     ; 130 	break;
-4570  044d 200d          	jra	L7662
-4571  044f               L5462:
-4572                     ; 131 	case 1:
-4572                     ; 132 	k155_data = hours;
-4574  044f 450e17        	mov	_k155_data,_hours
-4575                     ; 133 	break;
-4577  0452 2008          	jra	L7662
-4578  0454               L7462:
-4579                     ; 134 	case 2:
-4579                     ; 135 	k155_data = minutes_tens;
-4581  0454 450a17        	mov	_k155_data,_minutes_tens
-4582                     ; 136 	break;
-4584  0457 2003          	jra	L7662
-4585  0459               L1562:
-4586                     ; 137 	case 3:
-4586                     ; 138 	k155_data = minutes;
-4588  0459 450d17        	mov	_k155_data,_minutes
-4589                     ; 139 	break;
-4591  045c               L7662:
-4592                     ; 142 	if (lamp_number < 3)
-4594  045c b600          	ld	a,_lamp_number
-4595  045e a103          	cp	a,#3
-4596  0460 2415          	jruge	L1762
-4597                     ; 144 			lamp_number_data = (1<<(lamp_number++));
-4599  0462 b600          	ld	a,_lamp_number
-4600  0464 97            	ld	xl,a
-4601  0465 3c00          	inc	_lamp_number
-4602  0467 9f            	ld	a,xl
-4603  0468 5f            	clrw	x
-4604  0469 97            	ld	xl,a
-4605  046a a601          	ld	a,#1
-4606  046c 5d            	tnzw	x
-4607  046d 2704          	jreq	L05
-4608  046f               L25:
-4609  046f 48            	sll	a
-4610  0470 5a            	decw	x
-4611  0471 26fc          	jrne	L25
-4612  0473               L05:
-4613  0473 b716          	ld	_lamp_number_data,a
-4615  0475 2017          	jra	L3762
-4616  0477               L1762:
-4617                     ; 146 		else if (lamp_number >= 3)
-4619  0477 b600          	ld	a,_lamp_number
-4620  0479 a103          	cp	a,#3
-4621  047b 2511          	jrult	L3762
-4622                     ; 148 			lamp_number_data = (1<<(lamp_number));
-4624  047d b600          	ld	a,_lamp_number
-4625  047f 5f            	clrw	x
-4626  0480 97            	ld	xl,a
-4627  0481 a601          	ld	a,#1
-4628  0483 5d            	tnzw	x
-4629  0484 2704          	jreq	L45
-4630  0486               L65:
-4631  0486 48            	sll	a
-4632  0487 5a            	decw	x
-4633  0488 26fc          	jrne	L65
-4634  048a               L45:
-4635  048a b716          	ld	_lamp_number_data,a
-4636                     ; 149 			lamp_number = 0;
-4638  048c 3f00          	clr	_lamp_number
-4639  048e               L3762:
-4640                     ; 152 	schetchik = 0;
-4642  048e 3f0a          	clr	_schetchik
-4644  0490 2006          	jra	L7762
-4645  0492               L3662:
-4646                     ; 156 		lamp_number_data = 0;
-4648  0492 3f16          	clr	_lamp_number_data
-4649                     ; 157 		schetchik = 1;
-4651  0494 3501000a      	mov	_schetchik,#1
-4652  0498               L7762:
-4653                     ; 161 	if (dots_on == 1){
-4655  0498 be04          	ldw	x,_dots_on
-4656  049a a30001        	cpw	x,#1
-4657  049d 261c          	jrne	L1072
-4658                     ; 162 		if (dots_upd < 10000){
-4660  049f be02          	ldw	x,_dots_upd
-4661  04a1 a32710        	cpw	x,#10000
-4662  04a4 242c          	jruge	L5072
-4663                     ; 163 			dots_upd +=10;
-4665  04a6 be02          	ldw	x,_dots_upd
-4666  04a8 1c000a        	addw	x,#10
-4667  04ab bf02          	ldw	_dots_upd,x
-4668                     ; 164 			TIM2_CCR1H = dots_upd >> 8;
-4670  04ad 5500025311    	mov	_TIM2_CCR1H,_dots_upd
-4671                     ; 165 			TIM2_CCR1L = dots_upd & 0xFF;
-4673  04b2 b603          	ld	a,_dots_upd+1
-4674  04b4 a4ff          	and	a,#255
-4675  04b6 c75312        	ld	_TIM2_CCR1L,a
-4676  04b9 2017          	jra	L5072
-4677  04bb               L1072:
-4678                     ; 169 			if (dots_upd > 0){
-4680  04bb be02          	ldw	x,_dots_upd
-4681  04bd 2713          	jreq	L5072
-4682                     ; 170 				dots_upd -= 10;
-4684  04bf be02          	ldw	x,_dots_upd
-4685  04c1 1d000a        	subw	x,#10
-4686  04c4 bf02          	ldw	_dots_upd,x
-4687                     ; 171 				TIM2_CCR1H = dots_upd >> 8;
-4689  04c6 5500025311    	mov	_TIM2_CCR1H,_dots_upd
-4690                     ; 172 				TIM2_CCR1L = dots_upd & 0xFF;
-4692  04cb b603          	ld	a,_dots_upd+1
-4693  04cd a4ff          	and	a,#255
-4694  04cf c75312        	ld	_TIM2_CCR1L,a
-4695  04d2               L5072:
-4696                     ; 176 			timers_int_off();
-4698  04d2 ad22          	call	_timers_int_off
-4700                     ; 177 			PA_ODR &= (0<<3);
-4702  04d4 725f5000      	clr	_PA_ODR
-4703                     ; 178 			spi_send(kostil_k155(k155_data));
-4705  04d8 b617          	ld	a,_k155_data
-4706  04da cd055c        	call	_kostil_k155
-4708  04dd cd0583        	call	_spi_send
-4710                     ; 180 			spi_send(lamp_number_data & ~dots);
-4712  04e0 b601          	ld	a,_dots
-4713  04e2 43            	cpl	a
-4714  04e3 b416          	and	a,_lamp_number_data
-4715  04e5 cd0583        	call	_spi_send
-4718  04e8               L3172:
-4719                     ; 181 			while((SPI_SR & SPI_SR_BSY) != 0);
-4721  04e8 c65203        	ld	a,_SPI_SR
-4722  04eb a580          	bcp	a,#128
-4723  04ed 26f9          	jrne	L3172
-4724                     ; 182 			PA_ODR |= (1<<3);
-4726  04ef 72165000      	bset	_PA_ODR,#3
-4727                     ; 183 			timers_int_on();
-4729  04f3 ad0a          	call	_timers_int_on
-4731                     ; 184 	return;
-4734  04f5 81            	ret
-4759                     ; 188 void timers_int_off(void)
-4759                     ; 189 {
-4760                     	switch	.text
-4761  04f6               _timers_int_off:
-4765                     ; 190 	TIM1_IER &= ~TIM1_IER_UIE;
-4767  04f6 72115254      	bres	_TIM1_IER,#0
-4768                     ; 192 	TIM2_IER = 0;
-4770  04fa 725f5303      	clr	_TIM2_IER
-4771                     ; 193 }
-4774  04fe 81            	ret
-4799                     ; 196 void timers_int_on(void)
-4799                     ; 197 {
-4800                     	switch	.text
-4801  04ff               _timers_int_on:
-4805                     ; 198 	TIM1_IER |= TIM1_IER_UIE;
-4807  04ff 72105254      	bset	_TIM1_IER,#0
-4808                     ; 199 	TIM2_IER |=	TIM2_IER_CC1IE |TIM2_IER_UIE;	//overflow int and compare 1
-4810  0503 c65303        	ld	a,_TIM2_IER
-4811  0506 aa03          	or	a,#3
-4812  0508 c75303        	ld	_TIM2_IER,a
-4813                     ; 200 }
-4816  050b 81            	ret
-4865                     ; 1 void time_write(void)
-4865                     ; 2 {
-4866                     	switch	.text
-4867  050c               _time_write:
-4871                     ; 5 	fresh_hours = fresh_hours + (fresh_hours_dec<<4);
-4873  050c b615          	ld	a,_fresh_hours_dec
-4874  050e 97            	ld	xl,a
-4875  050f a610          	ld	a,#16
-4876  0511 42            	mul	x,a
-4877  0512 9f            	ld	a,xl
-4878  0513 bb14          	add	a,_fresh_hours
-4879  0515 b714          	ld	_fresh_hours,a
-4880                     ; 6 	fresh_min = fresh_min + (fresh_min_dec<<4);
-4882  0517 b613          	ld	a,_fresh_min_dec
-4883  0519 97            	ld	xl,a
-4884  051a a610          	ld	a,#16
-4885  051c 42            	mul	x,a
-4886  051d 9f            	ld	a,xl
-4887  051e bb12          	add	a,_fresh_min
-4888  0520 b712          	ld	_fresh_min,a
-4889                     ; 7 	fresh_sec = fresh_sec + (fresh_sec_dec<<4);
-4891  0522 b611          	ld	a,_fresh_sec_dec
-4892  0524 97            	ld	xl,a
-4893  0525 a610          	ld	a,#16
-4894  0527 42            	mul	x,a
-4895  0528 9f            	ld	a,xl
-4896  0529 bb10          	add	a,_fresh_sec
-4897  052b b710          	ld	_fresh_sec,a
-4898                     ; 8 	timers_int_off();
-4900  052d adc7          	call	_timers_int_off
-4902                     ; 9 	i2c_wr_reg(ds_address, 2, &fresh_hours, 1);
-4904  052f 4b01          	push	#1
-4905  0531 ae0014        	ldw	x,#_fresh_hours
-4906  0534 89            	pushw	x
-4907  0535 aed002        	ldw	x,#53250
-4908  0538 cd013e        	call	_i2c_wr_reg
-4910  053b 5b03          	addw	sp,#3
-4911                     ; 10 	i2c_wr_reg(ds_address, 1, &fresh_min, 1);
-4913  053d 4b01          	push	#1
-4914  053f ae0012        	ldw	x,#_fresh_min
-4915  0542 89            	pushw	x
-4916  0543 aed001        	ldw	x,#53249
-4917  0546 cd013e        	call	_i2c_wr_reg
-4919  0549 5b03          	addw	sp,#3
-4920                     ; 11 	i2c_wr_reg(ds_address, 0, &fresh_sec, 1);
-4922  054b 4b01          	push	#1
-4923  054d ae0010        	ldw	x,#_fresh_sec
-4924  0550 89            	pushw	x
-4925  0551 aed000        	ldw	x,#53248
-4926  0554 cd013e        	call	_i2c_wr_reg
-4928  0557 5b03          	addw	sp,#3
-4929                     ; 12 	timers_int_on();
-4931  0559 ada4          	call	_timers_int_on
-4933                     ; 13 }
-4936  055b 81            	ret
-4988                     ; 15 uint8_t kostil_k155 (uint8_t byte)
-4988                     ; 16 {
-4989                     	switch	.text
-4990  055c               _kostil_k155:
-4992  055c 88            	push	a
-4993  055d 89            	pushw	x
-4994       00000002      OFST:	set	2
-4997                     ; 17 	uint8_t tmp = (byte<<1) & 0b00001100;
-4999  055e 48            	sll	a
-5000  055f a40c          	and	a,#12
-5001  0561 6b01          	ld	(OFST-1,sp),a
-5002                     ; 18 	uint8_t tmp2 = (byte>>2) & 0b00000010;
-5004  0563 7b03          	ld	a,(OFST+1,sp)
-5005  0565 44            	srl	a
-5006  0566 44            	srl	a
-5007  0567 a402          	and	a,#2
-5008  0569 6b02          	ld	(OFST+0,sp),a
-5009                     ; 19 	byte &= 1;
-5011  056b 7b03          	ld	a,(OFST+1,sp)
-5012  056d a401          	and	a,#1
-5013  056f 6b03          	ld	(OFST+1,sp),a
-5014                     ; 20 	byte |= tmp | tmp2;
-5016  0571 7b01          	ld	a,(OFST-1,sp)
-5017  0573 1a02          	or	a,(OFST+0,sp)
-5018  0575 1a03          	or	a,(OFST+1,sp)
-5019  0577 6b03          	ld	(OFST+1,sp),a
-5020                     ; 21 	return byte;
-5022  0579 7b03          	ld	a,(OFST+1,sp)
-5025  057b 5b03          	addw	sp,#3
-5026  057d 81            	ret
-5067                     ; 1 void spi_setup(void)
-5067                     ; 2  {
-5068                     	switch	.text
-5069  057e               _spi_setup:
-5073                     ; 3     SPI_CR1= 0b01000100;//0x7C;       //this
-5075  057e 35445200      	mov	_SPI_CR1,#68
-5076                     ; 5  }
-5079  0582 81            	ret
-5115                     ; 8 void spi_send(uint8_t msg)
-5115                     ; 9 {
-5116                     	switch	.text
-5117  0583               _spi_send:
-5119  0583 88            	push	a
-5120       00000000      OFST:	set	0
-5123  0584               L1403:
-5124                     ; 11 	while((SPI_SR & SPI_SR_BSY) != 0)
-5126  0584 c65203        	ld	a,_SPI_SR
-5127  0587 a580          	bcp	a,#128
-5128  0589 26f9          	jrne	L1403
-5129                     ; 14 	SPI_DR = msg;
-5131  058b 7b01          	ld	a,(OFST+1,sp)
-5132  058d c75204        	ld	_SPI_DR,a
-5133                     ; 15 }
-5136  0590 84            	pop	a
-5137  0591 81            	ret
-5179                     ; 4 void UART_Resieved (void)
-5179                     ; 5 {
-5180                     	switch	.text
-5181  0592               _UART_Resieved:
-5185                     ; 6 	uart_routine(UART1_DR);
-5187  0592 c65231        	ld	a,_UART1_DR
-5188  0595 cd002a        	call	_uart_routine
-5190                     ; 7 }
-5193  0598 81            	ret
-5218                     ; 9 void SPI_Transmitted(void)
-5218                     ; 10 {
-5219                     	switch	.text
-5220  0599               _SPI_Transmitted:
-5224                     ; 11 	spi_send(temp3);
-5226  0599 b609          	ld	a,_temp3
-5227  059b ade6          	call	_spi_send
-5229                     ; 12 }
-5232  059d 81            	ret
-5255                     ; 14 void I2C_Event(void)
-5255                     ; 15 {
+4038                     ; 37  void timer1_comp_start(uint16_t val)
+4038                     ; 38  {
+4039                     	switch	.text
+4040  0374               _timer1_comp_start:
+4044                     ; 39 		TIM1_IER |= TIM1_IER_CC1IE;
+4046  0374 72125254      	bset	_TIM1_IER,#1
+4047                     ; 40 		TIM1_CCR1H = val >> 8;
+4049  0378 9e            	ld	a,xh
+4050  0379 c75265        	ld	_TIM1_CCR1H,a
+4051                     ; 41 		TIM1_CCR1L = val & 0xFF;
+4053  037c 9f            	ld	a,xl
+4054  037d a4ff          	and	a,#255
+4055  037f c75266        	ld	_TIM1_CCR1L,a
+4056                     ; 42  }
+4059  0382 81            	ret
+4083                     ; 43  void timer1_comp_stop(void){
+4084                     	switch	.text
+4085  0383               _timer1_comp_stop:
+4089                     ; 44 	 TIM1_IER &= ~TIM1_IER_CC1IE;
+4091  0383 72135254      	bres	_TIM1_IER,#1
+4092                     ; 45  }
+4095  0387 81            	ret
+4119                     ; 47  void timer1_start(void)
+4119                     ; 48  {
+4120                     	switch	.text
+4121  0388               _timer1_start:
+4125                     ; 49    TIM1_CR1 |= TIM1_CR1_CEN;
+4127  0388 72105250      	bset	_TIM1_CR1,#0
+4128                     ; 50  }
+4131  038c 81            	ret
+4168                     ; 52 void timer2_start(uint16_t top_val)
+4168                     ; 53 {
+4169                     	switch	.text
+4170  038d               _timer2_start:
+4174                     ; 54   TIM2_ARRH =top_val >>8;
+4176  038d 9e            	ld	a,xh
+4177  038e c7530f        	ld	_TIM2_ARRH,a
+4178                     ; 55   TIM2_ARRL =top_val & 0xFF;
+4180  0391 9f            	ld	a,xl
+4181  0392 a4ff          	and	a,#255
+4182  0394 c75310        	ld	_TIM2_ARRL,a
+4183                     ; 56   TIM2_CR1 |= TIM2_CR1_CEN;
+4185  0397 72105300      	bset	_TIM2_CR1,#0
+4186                     ; 57 }
+4189  039b 81            	ret
+4222                     ; 60 void Timer2_Overflow (void)
+4222                     ; 61 {
+4223                     	switch	.text
+4224  039c               _Timer2_Overflow:
+4228                     ; 62 		TIM2_SR1 &= ~TIM2_SR1_UIF;
+4230  039c 72115304      	bres	_TIM2_SR1,#0
+4231                     ; 64 		timers_int_off();
+4233  03a0 cd04ae        	call	_timers_int_off
+4235                     ; 65 		PA_ODR &= (0<<3);
+4237  03a3 725f5000      	clr	_PA_ODR
+4238                     ; 67 		spi_send(kostil_k155(k155_data));
+4240  03a7 b617          	ld	a,_k155_data
+4241  03a9 cd0514        	call	_kostil_k155
+4243  03ac cd053b        	call	_spi_send
+4245                     ; 68 		spi_send(lamp_number_data | dots);
+4247  03af b616          	ld	a,_lamp_number_data
+4248  03b1 ba01          	or	a,_dots
+4249  03b3 cd053b        	call	_spi_send
+4252  03b6               L3752:
+4253                     ; 69 		while((SPI_SR & SPI_SR_BSY) != 0);
+4255  03b6 c65203        	ld	a,_SPI_SR
+4256  03b9 a580          	bcp	a,#128
+4257  03bb 26f9          	jrne	L3752
+4258                     ; 70 		PA_ODR |= (1<<3);
+4260  03bd 72165000      	bset	_PA_ODR,#3
+4261                     ; 71 		timers_int_on();
+4263  03c1 cd04b7        	call	_timers_int_on
+4265                     ; 72 }
+4268  03c4 81            	ret
+4299                     ; 75 void Timer1_overflow (void)
+4299                     ; 76 {
+4300                     	switch	.text
+4301  03c5               _Timer1_overflow:
+4305                     ; 77 		TIM1_SR1 &= ~TIM1_SR1_UIF;
+4307  03c5 72115255      	bres	_TIM1_SR1,#0
+4308                     ; 78 		dots = ~dots & DOTS_MASK;
+4310  03c9 b601          	ld	a,_dots
+4311  03cb 43            	cpl	a
+4312  03cc a410          	and	a,#16
+4313  03ce b701          	ld	_dots,a
+4314                     ; 80 		time_refresh();
+4316  03d0 cd056b        	call	_time_refresh
+4318                     ; 82 		if ((minutes == 0) && (shifting == 0)){
+4320  03d3 3d0d          	tnz	_minutes
+4321  03d5 2610          	jrne	L7062
+4323  03d7 3d02          	tnz	_shifting
+4324  03d9 260c          	jrne	L7062
+4325                     ; 83 			tim1comp = 5950;	//top of tim1/10
+4327  03db ae173e        	ldw	x,#5950
+4328  03de bf0f          	ldw	_tim1comp,x
+4329                     ; 84 			digits_shift_init();	//set every digit to zero
+4331  03e0 cd05c9        	call	_digits_shift_init
+4333                     ; 85 			timer1_comp_start(tim1comp);	//enable compare interrupt
+4335  03e3 be0f          	ldw	x,_tim1comp
+4336  03e5 ad8d          	call	_timer1_comp_start
+4338  03e7               L7062:
+4339                     ; 87 		if (minutes != 0 && minutes != 5){
+4341  03e7 3d0d          	tnz	_minutes
+4342  03e9 2708          	jreq	L1162
+4344  03eb b60d          	ld	a,_minutes
+4345  03ed a105          	cp	a,#5
+4346  03ef 2702          	jreq	L1162
+4347                     ; 88 			shifting = 0;	//disable block when minutes increased
+4349  03f1 3f02          	clr	_shifting
+4350  03f3               L1162:
+4351                     ; 90 }
+4354  03f3 81            	ret
+4388                     ; 93 void timer1_compare(void){
+4389                     	switch	.text
+4390  03f4               _timer1_compare:
+4394                     ; 94 		TIM1_SR1 &= ~TIM1_SR1_CC1IF;
+4396  03f4 72135255      	bres	_TIM1_SR1,#1
+4397                     ; 95 		if(hours < 9){
+4399  03f8 b60e          	ld	a,_hours
+4400  03fa a109          	cp	a,#9
+4401  03fc 241a          	jruge	L3262
+4402                     ; 96 		seconds_tens++;
+4404  03fe 3c0b          	inc	_seconds_tens
+4405                     ; 97 		minutes_tens++;
+4407  0400 3c0a          	inc	_minutes_tens
+4408                     ; 98 		hours_tens++;
+4410  0402 3c09          	inc	_hours_tens
+4411                     ; 100 		seconds++;
+4413  0404 3c0c          	inc	_seconds
+4414                     ; 101 		minutes++;
+4416  0406 3c0d          	inc	_minutes
+4417                     ; 102 		hours++;
+4419  0408 3c0e          	inc	_hours
+4420                     ; 103 		tim1comp += 5950;
+4422  040a be0f          	ldw	x,_tim1comp
+4423  040c 1c173e        	addw	x,#5950
+4424  040f bf0f          	ldw	_tim1comp,x
+4425                     ; 104 		timer1_comp_start(tim1comp);
+4427  0411 be0f          	ldw	x,_tim1comp
+4428  0413 cd0374        	call	_timer1_comp_start
+4431  0416 2007          	jra	L5262
+4432  0418               L3262:
+4433                     ; 107 			shifting = 1;	//block rolling
+4435  0418 35010002      	mov	_shifting,#1
+4436                     ; 108 			timer1_comp_stop();
+4438  041c cd0383        	call	_timer1_comp_stop
+4440  041f               L5262:
+4441                     ; 110 }
+4444  041f 81            	ret
+4484                     ; 112 void timer2_compare(void)
+4484                     ; 113 {
+4485                     	switch	.text
+4486  0420               _timer2_compare:
+4490                     ; 114 	TIM2_SR1 &= ~TIM2_SR1_CC1IF;
+4492  0420 72135304      	bres	_TIM2_SR1,#1
+4493                     ; 115 	IWDG_KR = KEY_REFRESH; //	Watchdog reset
+4495  0424 35aa50e0      	mov	_IWDG_KR,#170
+4496                     ; 117 	if (schetchik == 1)
+4498  0428 b60a          	ld	a,_schetchik
+4499  042a a101          	cp	a,#1
+4500  042c 2658          	jrne	L7462
+4501                     ; 119 	switch (lamp_number)
+4503  042e b600          	ld	a,_lamp_number
+4505                     ; 132 	break;
+4506  0430 4d            	tnz	a
+4507  0431 270b          	jreq	L7262
+4508  0433 4a            	dec	a
+4509  0434 270d          	jreq	L1362
+4510  0436 4a            	dec	a
+4511  0437 270f          	jreq	L3362
+4512  0439 4a            	dec	a
+4513  043a 2711          	jreq	L5362
+4514  043c 2012          	jra	L3562
+4515  043e               L7262:
+4516                     ; 121 	case 0:
+4516                     ; 122 	k155_data = hours_tens; 
+4518  043e 450917        	mov	_k155_data,_hours_tens
+4519                     ; 123 	break;
+4521  0441 200d          	jra	L3562
+4522  0443               L1362:
+4523                     ; 124 	case 1:
+4523                     ; 125 	k155_data = hours;
+4525  0443 450e17        	mov	_k155_data,_hours
+4526                     ; 126 	break;
+4528  0446 2008          	jra	L3562
+4529  0448               L3362:
+4530                     ; 127 	case 2:
+4530                     ; 128 	k155_data = minutes_tens;
+4532  0448 450a17        	mov	_k155_data,_minutes_tens
+4533                     ; 129 	break;
+4535  044b 2003          	jra	L3562
+4536  044d               L5362:
+4537                     ; 130 	case 3:
+4537                     ; 131 	k155_data = minutes;
+4539  044d 450d17        	mov	_k155_data,_minutes
+4540                     ; 132 	break;
+4542  0450               L3562:
+4543                     ; 135 	if (lamp_number < 3)
+4545  0450 b600          	ld	a,_lamp_number
+4546  0452 a103          	cp	a,#3
+4547  0454 2415          	jruge	L5562
+4548                     ; 137 			lamp_number_data = (1<<(lamp_number++));
+4550  0456 b600          	ld	a,_lamp_number
+4551  0458 97            	ld	xl,a
+4552  0459 3c00          	inc	_lamp_number
+4553  045b 9f            	ld	a,xl
+4554  045c 5f            	clrw	x
+4555  045d 97            	ld	xl,a
+4556  045e a601          	ld	a,#1
+4557  0460 5d            	tnzw	x
+4558  0461 2704          	jreq	L64
+4559  0463               L05:
+4560  0463 48            	sll	a
+4561  0464 5a            	decw	x
+4562  0465 26fc          	jrne	L05
+4563  0467               L64:
+4564  0467 b716          	ld	_lamp_number_data,a
+4566  0469 2017          	jra	L7562
+4567  046b               L5562:
+4568                     ; 139 		else if (lamp_number >= 3)
+4570  046b b600          	ld	a,_lamp_number
+4571  046d a103          	cp	a,#3
+4572  046f 2511          	jrult	L7562
+4573                     ; 141 			lamp_number_data = (1<<(lamp_number));
+4575  0471 b600          	ld	a,_lamp_number
+4576  0473 5f            	clrw	x
+4577  0474 97            	ld	xl,a
+4578  0475 a601          	ld	a,#1
+4579  0477 5d            	tnzw	x
+4580  0478 2704          	jreq	L25
+4581  047a               L45:
+4582  047a 48            	sll	a
+4583  047b 5a            	decw	x
+4584  047c 26fc          	jrne	L45
+4585  047e               L25:
+4586  047e b716          	ld	_lamp_number_data,a
+4587                     ; 142 			lamp_number = 0;
+4589  0480 3f00          	clr	_lamp_number
+4590  0482               L7562:
+4591                     ; 145 	schetchik = 0;
+4593  0482 3f0a          	clr	_schetchik
+4595  0484 2006          	jra	L3662
+4596  0486               L7462:
+4597                     ; 149 		lamp_number_data = 0;
+4599  0486 3f16          	clr	_lamp_number_data
+4600                     ; 150 		schetchik = 1;
+4602  0488 3501000a      	mov	_schetchik,#1
+4603  048c               L3662:
+4604                     ; 153 		timers_int_off();
+4606  048c ad20          	call	_timers_int_off
+4608                     ; 154 		PA_ODR &= (0<<3);
+4610  048e 725f5000      	clr	_PA_ODR
+4611                     ; 155 		spi_send(kostil_k155(k155_data));
+4613  0492 b617          	ld	a,_k155_data
+4614  0494 ad7e          	call	_kostil_k155
+4616  0496 cd053b        	call	_spi_send
+4618                     ; 157 		spi_send(lamp_number_data | dots);
+4620  0499 b616          	ld	a,_lamp_number_data
+4621  049b ba01          	or	a,_dots
+4622  049d cd053b        	call	_spi_send
+4625  04a0               L7662:
+4626                     ; 158 		while((SPI_SR & SPI_SR_BSY) != 0);
+4628  04a0 c65203        	ld	a,_SPI_SR
+4629  04a3 a580          	bcp	a,#128
+4630  04a5 26f9          	jrne	L7662
+4631                     ; 159 		PA_ODR |= (1<<3);
+4633  04a7 72165000      	bset	_PA_ODR,#3
+4634                     ; 160 		timers_int_on();
+4636  04ab ad0a          	call	_timers_int_on
+4638                     ; 161 	return;
+4641  04ad 81            	ret
+4666                     ; 165 void timers_int_off(void)
+4666                     ; 166 {
+4667                     	switch	.text
+4668  04ae               _timers_int_off:
+4672                     ; 167 		TIM1_IER &= ~TIM1_IER_UIE;
+4674  04ae 72115254      	bres	_TIM1_IER,#0
+4675                     ; 168 		TIM2_IER = 0;
+4677  04b2 725f5303      	clr	_TIM2_IER
+4678                     ; 169 }
+4681  04b6 81            	ret
+4706                     ; 170 void timers_int_on(void)
+4706                     ; 171 {
+4707                     	switch	.text
+4708  04b7               _timers_int_on:
+4712                     ; 172 		TIM1_IER |= TIM1_IER_UIE;
+4714  04b7 72105254      	bset	_TIM1_IER,#0
+4715                     ; 173 		TIM2_IER |=	TIM2_IER_CC1IE |TIM2_IER_UIE;	//overflow int and compare 1
+4717  04bb c65303        	ld	a,_TIM2_IER
+4718  04be aa03          	or	a,#3
+4719  04c0 c75303        	ld	_TIM2_IER,a
+4720                     ; 174 }
+4723  04c3 81            	ret
+4772                     ; 2 void time_write(void)
+4772                     ; 3 {
+4773                     	switch	.text
+4774  04c4               _time_write:
+4778                     ; 4 	fresh_hours = fresh_hours + (fresh_hours_dec<<4);
+4780  04c4 b615          	ld	a,_fresh_hours_dec
+4781  04c6 97            	ld	xl,a
+4782  04c7 a610          	ld	a,#16
+4783  04c9 42            	mul	x,a
+4784  04ca 9f            	ld	a,xl
+4785  04cb bb14          	add	a,_fresh_hours
+4786  04cd b714          	ld	_fresh_hours,a
+4787                     ; 5 	fresh_min = fresh_min + (fresh_min_dec<<4);
+4789  04cf b613          	ld	a,_fresh_min_dec
+4790  04d1 97            	ld	xl,a
+4791  04d2 a610          	ld	a,#16
+4792  04d4 42            	mul	x,a
+4793  04d5 9f            	ld	a,xl
+4794  04d6 bb12          	add	a,_fresh_min
+4795  04d8 b712          	ld	_fresh_min,a
+4796                     ; 6 	fresh_sec = fresh_sec + (fresh_sec_dec<<4);
+4798  04da b611          	ld	a,_fresh_sec_dec
+4799  04dc 97            	ld	xl,a
+4800  04dd a610          	ld	a,#16
+4801  04df 42            	mul	x,a
+4802  04e0 9f            	ld	a,xl
+4803  04e1 bb10          	add	a,_fresh_sec
+4804  04e3 b710          	ld	_fresh_sec,a
+4805                     ; 7 	timers_int_off();
+4807  04e5 adc7          	call	_timers_int_off
+4809                     ; 8 	i2c_wr_reg(ds_address, 2, &fresh_hours, 1);
+4811  04e7 4b01          	push	#1
+4812  04e9 ae0014        	ldw	x,#_fresh_hours
+4813  04ec 89            	pushw	x
+4814  04ed aed002        	ldw	x,#53250
+4815  04f0 cd013e        	call	_i2c_wr_reg
+4817  04f3 5b03          	addw	sp,#3
+4818                     ; 9 	i2c_wr_reg(ds_address, 1, &fresh_min, 1);
+4820  04f5 4b01          	push	#1
+4821  04f7 ae0012        	ldw	x,#_fresh_min
+4822  04fa 89            	pushw	x
+4823  04fb aed001        	ldw	x,#53249
+4824  04fe cd013e        	call	_i2c_wr_reg
+4826  0501 5b03          	addw	sp,#3
+4827                     ; 10 	i2c_wr_reg(ds_address, 0, &fresh_sec, 1);
+4829  0503 4b01          	push	#1
+4830  0505 ae0010        	ldw	x,#_fresh_sec
+4831  0508 89            	pushw	x
+4832  0509 aed000        	ldw	x,#53248
+4833  050c cd013e        	call	_i2c_wr_reg
+4835  050f 5b03          	addw	sp,#3
+4836                     ; 11 	timers_int_on();
+4838  0511 ada4          	call	_timers_int_on
+4840                     ; 12 }
+4843  0513 81            	ret
+4895                     ; 14 uint8_t kostil_k155 (uint8_t byte)
+4895                     ; 15 {
+4896                     	switch	.text
+4897  0514               _kostil_k155:
+4899  0514 88            	push	a
+4900  0515 89            	pushw	x
+4901       00000002      OFST:	set	2
+4904                     ; 16 	uint8_t tmp = (byte<<1) & 0b00001100;
+4906  0516 48            	sll	a
+4907  0517 a40c          	and	a,#12
+4908  0519 6b01          	ld	(OFST-1,sp),a
+4909                     ; 17 	uint8_t tmp2 = (byte>>2) & 0b00000010;
+4911  051b 7b03          	ld	a,(OFST+1,sp)
+4912  051d 44            	srl	a
+4913  051e 44            	srl	a
+4914  051f a402          	and	a,#2
+4915  0521 6b02          	ld	(OFST+0,sp),a
+4916                     ; 18 	byte &= 1;
+4918  0523 7b03          	ld	a,(OFST+1,sp)
+4919  0525 a401          	and	a,#1
+4920  0527 6b03          	ld	(OFST+1,sp),a
+4921                     ; 19 	byte |= tmp | tmp2;
+4923  0529 7b01          	ld	a,(OFST-1,sp)
+4924  052b 1a02          	or	a,(OFST+0,sp)
+4925  052d 1a03          	or	a,(OFST+1,sp)
+4926  052f 6b03          	ld	(OFST+1,sp),a
+4927                     ; 20 	return byte;
+4929  0531 7b03          	ld	a,(OFST+1,sp)
+4932  0533 5b03          	addw	sp,#3
+4933  0535 81            	ret
+4974                     ; 1 void spi_setup(void)
+4974                     ; 2  {
+4975                     	switch	.text
+4976  0536               _spi_setup:
+4980                     ; 3     SPI_CR1= 0b01000100;//0x7C;       //this
+4982  0536 35445200      	mov	_SPI_CR1,#68
+4983                     ; 5  }
+4986  053a 81            	ret
+5022                     ; 8 void spi_send(uint8_t msg)
+5022                     ; 9 {
+5023                     	switch	.text
+5024  053b               _spi_send:
+5026  053b 88            	push	a
+5027       00000000      OFST:	set	0
+5030  053c               L5103:
+5031                     ; 11 	while((SPI_SR & SPI_SR_BSY) != 0)
+5033  053c c65203        	ld	a,_SPI_SR
+5034  053f a580          	bcp	a,#128
+5035  0541 26f9          	jrne	L5103
+5036                     ; 14 	SPI_DR = msg;
+5038  0543 7b01          	ld	a,(OFST+1,sp)
+5039  0545 c75204        	ld	_SPI_DR,a
+5040                     ; 15 }
+5043  0548 84            	pop	a
+5044  0549 81            	ret
+5086                     ; 4 void UART_Resieved (void)
+5086                     ; 5 {
+5087                     	switch	.text
+5088  054a               _UART_Resieved:
+5092                     ; 6 	uart_routine(UART1_DR);
+5094  054a c65231        	ld	a,_UART1_DR
+5095  054d cd002a        	call	_uart_routine
+5097                     ; 7 }
+5100  0550 81            	ret
+5125                     ; 9 void SPI_Transmitted(void)
+5125                     ; 10 {
+5126                     	switch	.text
+5127  0551               _SPI_Transmitted:
+5131                     ; 11 	spi_send(temp3);
+5133  0551 b609          	ld	a,_temp3
+5134  0553 ade6          	call	_spi_send
+5136                     ; 12 }
+5139  0555 81            	ret
+5162                     ; 14 void I2C_Event(void)
+5162                     ; 15 {
+5163                     	switch	.text
+5164  0556               _I2C_Event:
+5168                     ; 16 }
+5171  0556 81            	ret
+5197                     ; 18 void Keys_switched(void)
+5197                     ; 19 {
+5198                     	switch	.text
+5199  0557               _Keys_switched:
+5203                     ; 20 	EXTI_CR1 = ~(EXTI_CR1) & 0b00110000;
+5205  0557 c650a0        	ld	a,_EXTI_CR1
+5206  055a 43            	cpl	a
+5207  055b a430          	and	a,#48
+5208  055d c750a0        	ld	_EXTI_CR1,a
+5209                     ; 21 	PC_CR2 = 0;
+5211  0560 725f500e      	clr	_PC_CR2
+5212                     ; 22 	timer2_start(0xff);	
+5214  0564 ae00ff        	ldw	x,#255
+5215  0567 cd038d        	call	_timer2_start
+5217                     ; 23 }
+5220  056a 81            	ret
+5255                     ; 25 void time_refresh (void)
+5255                     ; 26 {
 5256                     	switch	.text
-5257  059e               _I2C_Event:
-5261                     ; 17 }
-5264  059e 81            	ret
-5290                     ; 19 void Keys_switched(void)
-5290                     ; 20 {
-5291                     	switch	.text
-5292  059f               _Keys_switched:
-5296                     ; 21 	EXTI_CR1 = ~(EXTI_CR1) & 0b00110000;
-5298  059f c650a0        	ld	a,_EXTI_CR1
-5299  05a2 43            	cpl	a
-5300  05a3 a430          	and	a,#48
-5301  05a5 c750a0        	ld	_EXTI_CR1,a
-5302                     ; 22 	PC_CR2 = 0;
-5304  05a8 725f500e      	clr	_PC_CR2
-5305                     ; 23 	timer2_start(0xff);	
-5307  05ac ae00ff        	ldw	x,#255
-5308  05af cd0396        	call	_timer2_start
-5310                     ; 24 }
-5313  05b2 81            	ret
-5348                     ; 26 void time_refresh (void)
-5348                     ; 27 {
-5349                     	switch	.text
-5350  05b3               _time_refresh:
-5354                     ; 29 	timers_int_off();
-5356  05b3 cd04f6        	call	_timers_int_off
-5358                     ; 30 	i2c_rd_reg(0xD0, 0, &fresh_sec, 1); 	
-5360  05b6 4b01          	push	#1
-5361  05b8 ae0010        	ldw	x,#_fresh_sec
-5362  05bb 89            	pushw	x
-5363  05bc aed000        	ldw	x,#53248
-5364  05bf cd01a1        	call	_i2c_rd_reg
-5366  05c2 5b03          	addw	sp,#3
-5367                     ; 31 	i2c_rd_reg(0xD0, 1, &fresh_min, 1);
-5369  05c4 4b01          	push	#1
-5370  05c6 ae0012        	ldw	x,#_fresh_min
-5371  05c9 89            	pushw	x
-5372  05ca aed001        	ldw	x,#53249
-5373  05cd cd01a1        	call	_i2c_rd_reg
-5375  05d0 5b03          	addw	sp,#3
-5376                     ; 32 	i2c_rd_reg(0xD0, 2, &fresh_hours, 1);
-5378  05d2 4b01          	push	#1
-5379  05d4 ae0014        	ldw	x,#_fresh_hours
-5380  05d7 89            	pushw	x
-5381  05d8 aed002        	ldw	x,#53250
-5382  05db cd01a1        	call	_i2c_rd_reg
-5384  05de 5b03          	addw	sp,#3
-5385                     ; 33 	timers_int_on();
-5387  05e0 cd04ff        	call	_timers_int_on
-5389                     ; 35 	seconds_tens = (fresh_sec & 0xf0)>>4;
-5391  05e3 b610          	ld	a,_fresh_sec
-5392  05e5 a4f0          	and	a,#240
-5393  05e7 4e            	swap	a
-5394  05e8 a40f          	and	a,#15
-5395  05ea b70b          	ld	_seconds_tens,a
-5396                     ; 36 	minutes_tens = (fresh_min & 0xf0)>>4;
-5398  05ec b612          	ld	a,_fresh_min
-5399  05ee a4f0          	and	a,#240
-5400  05f0 4e            	swap	a
-5401  05f1 a40f          	and	a,#15
-5402  05f3 b70a          	ld	_minutes_tens,a
-5403                     ; 37 	hours_tens = (fresh_hours & 0xf0)>>4;
-5405  05f5 b614          	ld	a,_fresh_hours
-5406  05f7 a4f0          	and	a,#240
-5407  05f9 4e            	swap	a
-5408  05fa a40f          	and	a,#15
-5409  05fc b709          	ld	_hours_tens,a
-5410                     ; 39 	seconds = fresh_sec & 0x0f;
-5412  05fe b610          	ld	a,_fresh_sec
-5413  0600 a40f          	and	a,#15
-5414  0602 b70c          	ld	_seconds,a
-5415                     ; 40 	minutes = fresh_min & 0x0f;
-5417  0604 b612          	ld	a,_fresh_min
-5418  0606 a40f          	and	a,#15
-5419  0608 b70d          	ld	_minutes,a
-5420                     ; 41 	hours = fresh_hours & 0x0f;
-5422  060a b614          	ld	a,_fresh_hours
-5423  060c a40f          	and	a,#15
-5424  060e b70e          	ld	_hours,a
-5425                     ; 42 }
-5428  0610 81            	ret
-5457                     ; 44 void digits_shift_init (void)
-5457                     ; 45 {
-5458                     	switch	.text
-5459  0611               _digits_shift_init:
-5463                     ; 47 	seconds_tens = 0;
-5465  0611 3f0b          	clr	_seconds_tens
-5466                     ; 48 	minutes_tens = 0;
-5468  0613 3f0a          	clr	_minutes_tens
-5469                     ; 49 	hours_tens = 0;
-5471  0615 3f09          	clr	_hours_tens
-5472                     ; 51 	seconds = 0;
-5474  0617 3f0c          	clr	_seconds
-5475                     ; 52 	minutes = 0;
-5477  0619 3f0d          	clr	_minutes
-5478                     ; 53 	hours = 0;
-5480  061b 3f0e          	clr	_hours
-5481                     ; 54 }
-5484  061d 81            	ret
-5552                     ; 21 int main( void )
-5552                     ; 22 {
-5553                     	switch	.text
-5554  061e               _main:
-5558                     ; 24 		CLK_CKDIVR=0;                //	no dividers
-5560  061e 725f50c6      	clr	_CLK_CKDIVR
-5561                     ; 26 		for (i = 0; i < 0xFFFF; i++);
-5563  0622 5f            	clrw	x
-5564  0623 bf0b          	ldw	_i,x
-5565  0625               L1513:
-5569  0625 be0b          	ldw	x,_i
-5570  0627 1c0001        	addw	x,#1
-5571  062a bf0b          	ldw	_i,x
-5574  062c be0b          	ldw	x,_i
-5575  062e a3ffff        	cpw	x,#65535
-5576  0631 25f2          	jrult	L1513
-5577                     ; 27 		CLK_PCKENR1=0xff;//0x8B;     //0b10001011;        //clocking for TIM1, UART1, SPI i I2C
-5579  0633 35ff50c7      	mov	_CLK_PCKENR1,#255
-5580                     ; 30     PA_DDR=(1<<3) | (1<<2); //0b000001000; //output for register's latch, input for RTC 1 Hz pulse
-5582  0637 350c5002      	mov	_PA_DDR,#12
-5583                     ; 31     PA_CR1= 0xff;        //	pull-up on inputs, push-pull on outputs
-5585  063b 35ff5003      	mov	_PA_CR1,#255
-5586                     ; 32     PA_ODR |= (1<<3);
-5588  063f 72165000      	bset	_PA_ODR,#3
-5589                     ; 33 		PA_CR2 |=(1<<3);        //	interrupt on PA1 for 1hz
-5591  0643 72165004      	bset	_PA_CR2,#3
-5592                     ; 35     PC_DDR=0x60; //0b01100000; // buttons pins as input
-5594  0647 3560500c      	mov	_PC_DDR,#96
-5595                     ; 36     PC_CR1=0xff;        //	pull-up on inputs, push-pull on outputs
-5597  064b 35ff500d      	mov	_PC_CR1,#255
-5598                     ; 37     PC_CR2 |= (1<<4) | (1<<3);        //	interrapts for buttons
-5600  064f c6500e        	ld	a,_PC_CR2
-5601  0652 aa18          	or	a,#24
-5602  0654 c7500e        	ld	_PC_CR2,a
-5603                     ; 39 		PD_DDR= (1<<7) | (1<<5) | (1<<3);//0x20;        //0b00100000; //UART, SWIM
-5605  0657 35a85011      	mov	_PD_DDR,#168
-5606                     ; 40     PD_CR1=0xff;        //	pull-up on inputs, push-pull on outputs
-5608  065b 35ff5012      	mov	_PD_CR1,#255
-5609                     ; 41     PD_ODR = (1 << 3);
-5611  065f 3508500f      	mov	_PD_ODR,#8
-5612                     ; 45     spi_setup();
-5614  0663 cd057e        	call	_spi_setup
-5616                     ; 48 		uart_setup();
-5618  0666 cd0000        	call	_uart_setup
-5620                     ; 49 		uart_send('h');
-5622  0669 a668          	ld	a,#104
-5623  066b cd0019        	call	_uart_send
-5625                     ; 52     timer1_setup(65500,0xffff);//	freq in hz and top value
-5627  066e aeffff        	ldw	x,#65535
-5628  0671 89            	pushw	x
-5629  0672 aeffdc        	ldw	x,#65500
-5630  0675 cd02e4        	call	_timer1_setup
-5632  0678 85            	popw	x
-5633                     ; 53 		timer2_setup();
-5635  0679 cd034f        	call	_timer2_setup
-5637                     ; 58 		i2c_master_init(16000000, 100000);
-5639  067c ae86a0        	ldw	x,#34464
-5640  067f 89            	pushw	x
-5641  0680 ae0001        	ldw	x,#1
-5642  0683 89            	pushw	x
-5643  0684 ae2400        	ldw	x,#9216
-5644  0687 89            	pushw	x
-5645  0688 ae00f4        	ldw	x,#244
-5646  068b 89            	pushw	x
-5647  068c cd00bc        	call	_i2c_master_init
-5649  068f 5b08          	addw	sp,#8
-5650                     ; 62 		timers_int_off();
-5652  0691 cd04f6        	call	_timers_int_off
-5654                     ; 63 		i2c_rd_reg(ds_address, 7, &temp, 1);
-5656  0694 4b01          	push	#1
-5657  0696 ae0003        	ldw	x,#_temp
-5658  0699 89            	pushw	x
-5659  069a aed007        	ldw	x,#53255
-5660  069d cd01a1        	call	_i2c_rd_reg
-5662  06a0 5b03          	addw	sp,#3
-5663                     ; 64 	if (temp != 0b10010000)	// if OUT and SWQ == 0
-5665  06a2 b603          	ld	a,_temp
-5666  06a4 a190          	cp	a,#144
-5667  06a6 270e          	jreq	L7513
-5668                     ; 66 			i2c_wr_reg(ds_address, 7,&ds_cr, 1);	//	setup RTC for 1Hz output
-5670  06a8 4b01          	push	#1
-5671  06aa ae000e        	ldw	x,#_ds_cr
-5672  06ad 89            	pushw	x
-5673  06ae aed007        	ldw	x,#53255
-5674  06b1 cd013e        	call	_i2c_wr_reg
-5676  06b4 5b03          	addw	sp,#3
-5677  06b6               L7513:
-5678                     ; 69 		i2c_rd_reg(ds_address, 0, &temp, 1);
-5680  06b6 4b01          	push	#1
-5681  06b8 ae0003        	ldw	x,#_temp
-5682  06bb 89            	pushw	x
-5683  06bc aed000        	ldw	x,#53248
-5684  06bf cd01a1        	call	_i2c_rd_reg
-5686  06c2 5b03          	addw	sp,#3
-5687                     ; 72 	if((temp & 0x80) == 0x80)
-5689  06c4 b603          	ld	a,_temp
-5690  06c6 a480          	and	a,#128
-5691  06c8 a180          	cp	a,#128
-5692  06ca 2610          	jrne	L1613
-5693                     ; 74 			temp = 0;
-5695  06cc 3f03          	clr	_temp
-5696                     ; 75 			i2c_wr_reg(ds_address, 0, &temp, 1);
-5698  06ce 4b01          	push	#1
-5699  06d0 ae0003        	ldw	x,#_temp
-5700  06d3 89            	pushw	x
-5701  06d4 aed000        	ldw	x,#53248
-5702  06d7 cd013e        	call	_i2c_wr_reg
-5704  06da 5b03          	addw	sp,#3
-5705  06dc               L1613:
-5706                     ; 78 		timers_int_on();
-5708  06dc cd04ff        	call	_timers_int_on
-5710                     ; 79 		timer1_start();
-5712  06df cd0391        	call	_timer1_start
-5714                     ; 80 		timer2_start(TIM2_TOP);
-5716  06e2 ae3e80        	ldw	x,#16000
-5717  06e5 cd0396        	call	_timer2_start
-5719                     ; 81 		_asm ("RIM");  //on interupts
-5722  06e8 9a            RIM
-5724  06e9               L3613:
-5726  06e9 20fe          	jra	L3613
-5739                     	xdef	_main
-5740                     	xdef	_Keys_switched
-5741                     	xdef	_I2C_Event
-5742                     	xdef	_SPI_Transmitted
-5743                     	xdef	_UART_Resieved
-5744                     	xdef	_spi_setup
-5745                     	xdef	_timer2_compare
-5746                     	xdef	_timer1_compare
-5747                     	xdef	_Timer1_overflow
-5748                     	xdef	_Timer2_Overflow
-5749                     	xdef	_timer2_start
-5750                     	xdef	_timer1_start
-5751                     	xdef	_timer1_comp_stop
-5752                     	xdef	_timer1_comp_start
-5753                     	xdef	_timer4_setup
-5754                     	xdef	_timer2_setup
-5755                     	xdef	_timer1_setup
-5756                     	xdef	_kostil_k155
-5757                     	xdef	_digits_shift_init
-5758                     	xdef	_time_refresh
-5759                     	xdef	_timers_int_on
-5760                     	xdef	_timers_int_off
-5761                     	xdef	_spi_send
-5762                     	xdef	_i2c_rd_reg
-5763                     	xdef	_i2c_wr_reg
-5764                     	xdef	_i2c_master_init
-5765                     	xdef	_Key_interrupt
-5766                     	xdef	_uart_routine
-5767                     	xdef	_uart_send
-5768                     	xdef	_uart_setup
-5769                     	xdef	_time_write
-5770                     	switch	.ubsct
-5771  0000               _i2c_flags:
-5772  0000 00            	ds.b	1
-5773                     	xdef	_i2c_flags
-5774  0001               _flags:
-5775  0001 00            	ds.b	1
-5776                     	xdef	_flags
-5777                     	xdef	_tim1comp
-5778  0002               _shifting:
-5779  0002 00            	ds.b	1
-5780                     	xdef	_shifting
-5781                     	xdef	_ds_cr
-5782                     	xdef	_schetchik2
-5783                     	xdef	_i
-5784                     	xdef	_schetchik
-5785                     	xdef	_temp3
-5786                     	xdef	_temp2
-5787  0003               _temp:
-5788  0003 00            	ds.b	1
-5789                     	xdef	_temp
-5790  0004               _pins:
-5791  0004 00            	ds.b	1
-5792                     	xdef	_pins
-5793  0005               _fresh_data_pointer:
-5794  0005 0000          	ds.b	2
-5795                     	xdef	_fresh_data_pointer
-5796  0007               _data_pointer:
-5797  0007 0000          	ds.b	2
-5798                     	xdef	_data_pointer
-5799                     	xdef	_time_pointer
-5800  0009               _hours_tens:
-5801  0009 00            	ds.b	1
-5802                     	xdef	_hours_tens
-5803  000a               _minutes_tens:
-5804  000a 00            	ds.b	1
-5805                     	xdef	_minutes_tens
-5806  000b               _seconds_tens:
-5807  000b 00            	ds.b	1
-5808                     	xdef	_seconds_tens
-5809  000c               _seconds:
-5810  000c 00            	ds.b	1
-5811                     	xdef	_seconds
-5812  000d               _minutes:
-5813  000d 00            	ds.b	1
-5814                     	xdef	_minutes
-5815  000e               _hours:
-5816  000e 00            	ds.b	1
-5817                     	xdef	_hours
-5818  000f               _timeset:
-5819  000f 00            	ds.b	1
-5820                     	xdef	_timeset
-5821  0010               _fresh_sec:
-5822  0010 00            	ds.b	1
-5823                     	xdef	_fresh_sec
-5824  0011               _fresh_sec_dec:
-5825  0011 00            	ds.b	1
-5826                     	xdef	_fresh_sec_dec
-5827  0012               _fresh_min:
-5828  0012 00            	ds.b	1
-5829                     	xdef	_fresh_min
-5830  0013               _fresh_min_dec:
-5831  0013 00            	ds.b	1
-5832                     	xdef	_fresh_min_dec
-5833  0014               _fresh_hours:
-5834  0014 00            	ds.b	1
-5835                     	xdef	_fresh_hours
-5836  0015               _fresh_hours_dec:
-5837  0015 00            	ds.b	1
-5838                     	xdef	_fresh_hours_dec
-5839                     	xdef	_dots_on
-5840                     	xdef	_dots_upd
-5841  0016               _lamp_number_data:
-5842  0016 00            	ds.b	1
-5843                     	xdef	_lamp_number_data
-5844  0017               _k155_data:
-5845  0017 00            	ds.b	1
-5846                     	xdef	_k155_data
-5847                     	xdef	_dots
-5848                     	xdef	_lamp_number
-5849                     	xref.b	c_lreg
-5850                     	xref.b	c_x
-5870                     	xref	c_lrsh
-5871                     	xref	c_ldiv
-5872                     	xref	c_uitolx
-5873                     	xref	c_ludv
-5874                     	xref	c_rtol
-5875                     	xref	c_ltor
-5876                     	end
+5257  056b               _time_refresh:
+5261                     ; 28 	timers_int_off();
+5263  056b cd04ae        	call	_timers_int_off
+5265                     ; 29 	i2c_rd_reg(0xD0, 0, &fresh_sec, 1); 	
+5267  056e 4b01          	push	#1
+5268  0570 ae0010        	ldw	x,#_fresh_sec
+5269  0573 89            	pushw	x
+5270  0574 aed000        	ldw	x,#53248
+5271  0577 cd01a1        	call	_i2c_rd_reg
+5273  057a 5b03          	addw	sp,#3
+5274                     ; 30 	i2c_rd_reg(0xD0, 1, &fresh_min, 1);
+5276  057c 4b01          	push	#1
+5277  057e ae0012        	ldw	x,#_fresh_min
+5278  0581 89            	pushw	x
+5279  0582 aed001        	ldw	x,#53249
+5280  0585 cd01a1        	call	_i2c_rd_reg
+5282  0588 5b03          	addw	sp,#3
+5283                     ; 31 	i2c_rd_reg(0xD0, 2, &fresh_hours, 1);
+5285  058a 4b01          	push	#1
+5286  058c ae0014        	ldw	x,#_fresh_hours
+5287  058f 89            	pushw	x
+5288  0590 aed002        	ldw	x,#53250
+5289  0593 cd01a1        	call	_i2c_rd_reg
+5291  0596 5b03          	addw	sp,#3
+5292                     ; 32 	timers_int_on();
+5294  0598 cd04b7        	call	_timers_int_on
+5296                     ; 34 	seconds_tens = (fresh_sec & 0xf0)>>4;
+5298  059b b610          	ld	a,_fresh_sec
+5299  059d a4f0          	and	a,#240
+5300  059f 4e            	swap	a
+5301  05a0 a40f          	and	a,#15
+5302  05a2 b70b          	ld	_seconds_tens,a
+5303                     ; 35 	minutes_tens = (fresh_min & 0xf0)>>4;
+5305  05a4 b612          	ld	a,_fresh_min
+5306  05a6 a4f0          	and	a,#240
+5307  05a8 4e            	swap	a
+5308  05a9 a40f          	and	a,#15
+5309  05ab b70a          	ld	_minutes_tens,a
+5310                     ; 36 	hours_tens = (fresh_hours & 0xf0)>>4;
+5312  05ad b614          	ld	a,_fresh_hours
+5313  05af a4f0          	and	a,#240
+5314  05b1 4e            	swap	a
+5315  05b2 a40f          	and	a,#15
+5316  05b4 b709          	ld	_hours_tens,a
+5317                     ; 38 	seconds = fresh_sec & 0x0f;
+5319  05b6 b610          	ld	a,_fresh_sec
+5320  05b8 a40f          	and	a,#15
+5321  05ba b70c          	ld	_seconds,a
+5322                     ; 39 	minutes = fresh_min & 0x0f;
+5324  05bc b612          	ld	a,_fresh_min
+5325  05be a40f          	and	a,#15
+5326  05c0 b70d          	ld	_minutes,a
+5327                     ; 40 	hours = fresh_hours & 0x0f;
+5329  05c2 b614          	ld	a,_fresh_hours
+5330  05c4 a40f          	and	a,#15
+5331  05c6 b70e          	ld	_hours,a
+5332                     ; 41 }
+5335  05c8 81            	ret
+5364                     ; 43 void digits_shift_init (void)
+5364                     ; 44 {
+5365                     	switch	.text
+5366  05c9               _digits_shift_init:
+5370                     ; 46 	seconds_tens = 0;
+5372  05c9 3f0b          	clr	_seconds_tens
+5373                     ; 47 	minutes_tens = 0;
+5375  05cb 3f0a          	clr	_minutes_tens
+5376                     ; 48 	hours_tens = 0;
+5378  05cd 3f09          	clr	_hours_tens
+5379                     ; 50 	seconds = 0;
+5381  05cf 3f0c          	clr	_seconds
+5382                     ; 51 	minutes = 0;
+5384  05d1 3f0d          	clr	_minutes
+5385                     ; 52 	hours = 0;
+5387  05d3 3f0e          	clr	_hours
+5388                     ; 53 }
+5391  05d5 81            	ret
+5462                     ; 19 int main( void )
+5462                     ; 20 {
+5463                     	switch	.text
+5464  05d6               _main:
+5468                     ; 22 		CLK_CKDIVR=0;                //	no dividers
+5470  05d6 725f50c6      	clr	_CLK_CKDIVR
+5471                     ; 24 		for (i = 0; i < 0xFFFF; i++);	//hotfix for usart
+5473  05da 5f            	clrw	x
+5474  05db bf0b          	ldw	_i,x
+5475  05dd               L5213:
+5479  05dd be0b          	ldw	x,_i
+5480  05df 1c0001        	addw	x,#1
+5481  05e2 bf0b          	ldw	_i,x
+5484  05e4 be0b          	ldw	x,_i
+5485  05e6 a3ffff        	cpw	x,#65535
+5486  05e9 25f2          	jrult	L5213
+5487                     ; 26 		CLK_PCKENR1=0xff;//0x8B;     //0b10001011;        //clocking for TIM1, UART1, SPI i I2C
+5489  05eb 35ff50c7      	mov	_CLK_PCKENR1,#255
+5490                     ; 29 		IWDG_KR = KEY_ACCESS;         //  Allow the IWDG registers to be programmed.
+5492  05ef 355550e0      	mov	_IWDG_KR,#85
+5493                     ; 30     IWDG_PR = 0x06;         //  Prescaler is 6 => ~1 sec 
+5495  05f3 350650e1      	mov	_IWDG_PR,#6
+5496                     ; 31     IWDG_RLR = 0xFF;        //  Counter for 1 sec.
+5498  05f7 35ff50e2      	mov	_IWDG_RLR,#255
+5499                     ; 32     IWDG_KR = KEY_REFRESH;         //  Reset the counter.
+5501  05fb 35aa50e0      	mov	_IWDG_KR,#170
+5502                     ; 33 		IWDG_KR = KEY_ENABLE;         //  Start the independent watchdog.
+5504  05ff 35cc50e0      	mov	_IWDG_KR,#204
+5505                     ; 36     PA_DDR=(1<<3) | (1<<2); //0b000001000; //output for register's latch, input for RTC 1 Hz pulse
+5507  0603 350c5002      	mov	_PA_DDR,#12
+5508                     ; 37     PA_CR1= 0xff;        //	pull-up on inputs, push-pull on outputs
+5510  0607 35ff5003      	mov	_PA_CR1,#255
+5511                     ; 38     PA_ODR |= (1<<3);
+5513  060b 72165000      	bset	_PA_ODR,#3
+5514                     ; 39 		PA_CR2 |=(1<<3);        //	interrupt on PA1 for 1hz
+5516  060f 72165004      	bset	_PA_CR2,#3
+5517                     ; 41     PC_DDR=0x60; //0b01100000; // buttons pins as input
+5519  0613 3560500c      	mov	_PC_DDR,#96
+5520                     ; 42     PC_CR1=0xff;        //	pull-up on inputs, push-pull on outputs
+5522  0617 35ff500d      	mov	_PC_CR1,#255
+5523                     ; 43     PC_CR2 |= (1<<4) | (1<<3);        //	interrapts for buttons
+5525  061b c6500e        	ld	a,_PC_CR2
+5526  061e aa18          	or	a,#24
+5527  0620 c7500e        	ld	_PC_CR2,a
+5528                     ; 45 		PD_DDR= (1<<7) | (1<<5) | (1<<3);//0x20;        //0b00100000; //UART, SWIM
+5530  0623 35a85011      	mov	_PD_DDR,#168
+5531                     ; 46     PD_CR1=0xff;        //	pull-up on inputs, push-pull on outputs
+5533  0627 35ff5012      	mov	_PD_CR1,#255
+5534                     ; 47     PD_ODR = (1 << 3);
+5536  062b 3508500f      	mov	_PD_ODR,#8
+5537                     ; 51     spi_setup();
+5539  062f cd0536        	call	_spi_setup
+5541                     ; 54 		uart_setup();
+5543  0632 cd0000        	call	_uart_setup
+5545                     ; 55 		uart_send('h');
+5547  0635 a668          	ld	a,#104
+5548  0637 cd0019        	call	_uart_send
+5550                     ; 58     timer1_setup(65500,0xffff);//	freq in hz and top value
+5552  063a aeffff        	ldw	x,#65535
+5553  063d 89            	pushw	x
+5554  063e aeffdc        	ldw	x,#65500
+5555  0641 cd02e4        	call	_timer1_setup
+5557  0644 85            	popw	x
+5558                     ; 59 		timer2_setup();
+5560  0645 cd034f        	call	_timer2_setup
+5562                     ; 62 		i2c_master_init(16000000, 100000);
+5564  0648 ae86a0        	ldw	x,#34464
+5565  064b 89            	pushw	x
+5566  064c ae0001        	ldw	x,#1
+5567  064f 89            	pushw	x
+5568  0650 ae2400        	ldw	x,#9216
+5569  0653 89            	pushw	x
+5570  0654 ae00f4        	ldw	x,#244
+5571  0657 89            	pushw	x
+5572  0658 cd00bc        	call	_i2c_master_init
+5574  065b 5b08          	addw	sp,#8
+5575                     ; 65 		timers_int_off();
+5577  065d cd04ae        	call	_timers_int_off
+5579                     ; 66 		i2c_rd_reg(ds_address, 7, &temp, 1);
+5581  0660 4b01          	push	#1
+5582  0662 ae0003        	ldw	x,#_temp
+5583  0665 89            	pushw	x
+5584  0666 aed007        	ldw	x,#53255
+5585  0669 cd01a1        	call	_i2c_rd_reg
+5587  066c 5b03          	addw	sp,#3
+5588                     ; 67 	if (temp != 0b10010000)	// if OUT and SWQ == 0
+5590  066e b603          	ld	a,_temp
+5591  0670 a190          	cp	a,#144
+5592  0672 270e          	jreq	L3313
+5593                     ; 69 			i2c_wr_reg(ds_address, 7,&ds_cr, 1);	//	setup RTC for 1Hz output
+5595  0674 4b01          	push	#1
+5596  0676 ae000e        	ldw	x,#_ds_cr
+5597  0679 89            	pushw	x
+5598  067a aed007        	ldw	x,#53255
+5599  067d cd013e        	call	_i2c_wr_reg
+5601  0680 5b03          	addw	sp,#3
+5602  0682               L3313:
+5603                     ; 72 		i2c_rd_reg(ds_address, 0, &temp, 1);
+5605  0682 4b01          	push	#1
+5606  0684 ae0003        	ldw	x,#_temp
+5607  0687 89            	pushw	x
+5608  0688 aed000        	ldw	x,#53248
+5609  068b cd01a1        	call	_i2c_rd_reg
+5611  068e 5b03          	addw	sp,#3
+5612                     ; 75 	if((temp & 0x80) == 0x80)
+5614  0690 b603          	ld	a,_temp
+5615  0692 a480          	and	a,#128
+5616  0694 a180          	cp	a,#128
+5617  0696 2610          	jrne	L5313
+5618                     ; 77 			temp = 0;
+5620  0698 3f03          	clr	_temp
+5621                     ; 78 			i2c_wr_reg(ds_address, 0, &temp, 1);
+5623  069a 4b01          	push	#1
+5624  069c ae0003        	ldw	x,#_temp
+5625  069f 89            	pushw	x
+5626  06a0 aed000        	ldw	x,#53248
+5627  06a3 cd013e        	call	_i2c_wr_reg
+5629  06a6 5b03          	addw	sp,#3
+5630  06a8               L5313:
+5631                     ; 81 		timers_int_on();
+5633  06a8 cd04b7        	call	_timers_int_on
+5635                     ; 82 		timer1_start();
+5637  06ab cd0388        	call	_timer1_start
+5639                     ; 83 		timer2_start(TIM2_TOP);
+5641  06ae ae3e80        	ldw	x,#16000
+5642  06b1 cd038d        	call	_timer2_start
+5644                     ; 85 		_asm ("RIM");  //on interupts
+5647  06b4 9a            RIM
+5649  06b5               L7313:
+5650                     ; 88 	while(1);
+5652  06b5 20fe          	jra	L7313
+5665                     	xdef	_main
+5666                     	xdef	_Keys_switched
+5667                     	xdef	_I2C_Event
+5668                     	xdef	_SPI_Transmitted
+5669                     	xdef	_UART_Resieved
+5670                     	xdef	_spi_setup
+5671                     	xdef	_timer2_compare
+5672                     	xdef	_timer1_compare
+5673                     	xdef	_Timer1_overflow
+5674                     	xdef	_Timer2_Overflow
+5675                     	xdef	_timer2_start
+5676                     	xdef	_timer1_start
+5677                     	xdef	_timer1_comp_stop
+5678                     	xdef	_timer1_comp_start
+5679                     	xdef	_timer2_setup
+5680                     	xdef	_timer1_setup
+5681                     	xdef	_kostil_k155
+5682                     	xdef	_digits_shift_init
+5683                     	xdef	_time_refresh
+5684                     	xdef	_timers_int_on
+5685                     	xdef	_timers_int_off
+5686                     	xdef	_spi_send
+5687                     	xdef	_i2c_rd_reg
+5688                     	xdef	_i2c_wr_reg
+5689                     	xdef	_i2c_master_init
+5690                     	xdef	_Key_interrupt
+5691                     	xdef	_uart_routine
+5692                     	xdef	_uart_send
+5693                     	xdef	_uart_setup
+5694                     	xdef	_time_write
+5695                     	switch	.ubsct
+5696  0000               _i2c_flags:
+5697  0000 00            	ds.b	1
+5698                     	xdef	_i2c_flags
+5699  0001               _flags:
+5700  0001 00            	ds.b	1
+5701                     	xdef	_flags
+5702                     	xdef	_tim1comp
+5703  0002               _shifting:
+5704  0002 00            	ds.b	1
+5705                     	xdef	_shifting
+5706                     	xdef	_ds_cr
+5707                     	xdef	_schetchik2
+5708                     	xdef	_i
+5709                     	xdef	_schetchik
+5710                     	xdef	_temp3
+5711                     	xdef	_temp2
+5712  0003               _temp:
+5713  0003 00            	ds.b	1
+5714                     	xdef	_temp
+5715  0004               _pins:
+5716  0004 00            	ds.b	1
+5717                     	xdef	_pins
+5718  0005               _fresh_data_pointer:
+5719  0005 0000          	ds.b	2
+5720                     	xdef	_fresh_data_pointer
+5721  0007               _data_pointer:
+5722  0007 0000          	ds.b	2
+5723                     	xdef	_data_pointer
+5724                     	xdef	_time_pointer
+5725  0009               _hours_tens:
+5726  0009 00            	ds.b	1
+5727                     	xdef	_hours_tens
+5728  000a               _minutes_tens:
+5729  000a 00            	ds.b	1
+5730                     	xdef	_minutes_tens
+5731  000b               _seconds_tens:
+5732  000b 00            	ds.b	1
+5733                     	xdef	_seconds_tens
+5734  000c               _seconds:
+5735  000c 00            	ds.b	1
+5736                     	xdef	_seconds
+5737  000d               _minutes:
+5738  000d 00            	ds.b	1
+5739                     	xdef	_minutes
+5740  000e               _hours:
+5741  000e 00            	ds.b	1
+5742                     	xdef	_hours
+5743  000f               _timeset:
+5744  000f 00            	ds.b	1
+5745                     	xdef	_timeset
+5746  0010               _fresh_sec:
+5747  0010 00            	ds.b	1
+5748                     	xdef	_fresh_sec
+5749  0011               _fresh_sec_dec:
+5750  0011 00            	ds.b	1
+5751                     	xdef	_fresh_sec_dec
+5752  0012               _fresh_min:
+5753  0012 00            	ds.b	1
+5754                     	xdef	_fresh_min
+5755  0013               _fresh_min_dec:
+5756  0013 00            	ds.b	1
+5757                     	xdef	_fresh_min_dec
+5758  0014               _fresh_hours:
+5759  0014 00            	ds.b	1
+5760                     	xdef	_fresh_hours
+5761  0015               _fresh_hours_dec:
+5762  0015 00            	ds.b	1
+5763                     	xdef	_fresh_hours_dec
+5764                     	xdef	_dots_on
+5765                     	xdef	_dots_upd
+5766  0016               _lamp_number_data:
+5767  0016 00            	ds.b	1
+5768                     	xdef	_lamp_number_data
+5769  0017               _k155_data:
+5770  0017 00            	ds.b	1
+5771                     	xdef	_k155_data
+5772                     	xdef	_dots
+5773                     	xdef	_lamp_number
+5774                     	xref.b	c_lreg
+5775                     	xref.b	c_x
+5795                     	xref	c_lrsh
+5796                     	xref	c_ldiv
+5797                     	xref	c_uitolx
+5798                     	xref	c_ludv
+5799                     	xref	c_rtol
+5800                     	xref	c_ltor
+5801                     	end

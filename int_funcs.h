@@ -13,7 +13,6 @@ void SPI_Transmitted(void)
 
 void I2C_Event(void)
 {
-
 }
 
 void Keys_switched(void)

@@ -1,5 +1,6 @@
 #ifndef VARABLES
 #define VARABLES
+
 #define CLOCK_FREQ 16000000
 #define F_MASTER_MHZ 16
 
@@ -13,6 +14,7 @@ typedef enum {
 // TODO: заменить все переменные состояний на битовые структуры
 volatile uint8_t lamp_number = 0;      //	lamp number 1-4
 volatile uint8_t dots = 0;//0b00010000;	// dots mask
+#define DOTS_MASK 0b00010000
 
 //	spi data:
 volatile uint8_t k155_data; 
@@ -38,9 +40,9 @@ volatile uint8_t temp3 = 0b00110011;
 volatile uint8_t schetchik = 0;
 uint16_t i = 0;
 volatile uint8_t schetchik2 = 0;
+
 //i2c peremennie
 uint8_t ds_cr = 0b10010000;
-
 volatile uint8_t shifting;
 uint16_t tim1comp = 5950;
 #define  ds_address 0xD0
@@ -53,7 +55,13 @@ uint16_t tim1comp = 5950;
 #define time_address 0        
 #define pin_control_adress 7
 #define ram_address 8
+//Watchdog defines
+#define KEY_ENABLE	0xcc
+#define KEY_REFRESH	0xaa
+#define KEY_ACCESS	0x55
+#define KEY_ACCESS_DISABLE 0x00
 
+//feature in test
 struct byte_t
 {
   unsigned shift: 1;
