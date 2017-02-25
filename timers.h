@@ -87,6 +87,18 @@ void Timer1_overflow (void)
 		if (minutes != 0 && minutes != 5){
 			shifting = 0;	//disable block when minutes increased
 			}
+			
+						/* time cprrection every day */
+		if ((hours == 0) && (minutes == 0) && (seconds == 10) 
+																		&& (correction == 1)){
+			correction = 0;
+			temp = 3;
+			i2c_wr_reg(ds_address, 0, &temp, 1);
+			
+		}else if ((hours == 0) && (minutes == 0) && (seconds == 10) 
+																		&& (correction == 0)){
+			correction = 1;
+		} 
 }
 
 //compare - swithing numbers

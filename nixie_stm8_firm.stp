@@ -61,7 +61,7 @@ String.100.2=STM8 Cosmic
 String.100.3=ST7 Metrowerks V1.1
 String.100.4=Raisonance
 String.101.0=STM8 Cosmic
-String.102.0=C:\Program Files (x86)\COSMIC\CXSTM8_EVAL
+String.102.0=C:\Program Files\COSMIC\CXSTM8_EVAL
 String.103.0=
 String.104.0=Hstm8
 String.105.0=Lib
@@ -74,7 +74,7 @@ String.6.0=2016,11,21,23,23,16
 String.100.0=$(TargetFName)
 String.101.0=
 String.102.0=
-String.103.0=.\;stm8s_stdperiph_lib\libraries\stm8s_stdperiph_driver\inc;c:\program files (x86)\cosmic\cxstm8_eval\hstm8;
+String.103.0=\\vboxsvr\data\workspace\nixie_stm8s_firm;\\vboxsvr\data\workspace\nixie_stm8s_firm\stm8s_stdperiph_lib\libraries\stm8s_stdperiph_driver\inc;c:\program files (x86)\cosmic\cxstm8_eval\hstm8;
 
 [Root.Config.0.Settings.2]
 String.2.0=
@@ -144,7 +144,7 @@ String.100.2=STM8 Cosmic
 String.100.3=ST7 Metrowerks V1.1
 String.100.4=Raisonance
 String.101.0=STM8 Cosmic
-String.102.0=C:\Program Files (x86)\COSMIC\CXSTM8_EVAL
+String.102.0=C:\Program Files\COSMIC\CXSTM8_EVAL
 String.103.0=
 String.104.0=Hstm8
 String.105.0=Lib
@@ -157,7 +157,7 @@ String.6.0=2016,11,21,23,23,16
 String.100.0=$(TargetFName)
 String.101.0=
 String.102.0=
-String.103.0=.\;stm8s_stdperiph_lib\libraries\stm8s_stdperiph_driver\inc;c:\program files (x86)\cosmic\cxstm8_eval\hstm8;
+String.103.0=\\vboxsvr\data\workspace\nixie_stm8s_firm;\\vboxsvr\data\workspace\nixie_stm8s_firm\stm8s_stdperiph_lib\libraries\stm8s_stdperiph_driver\inc;c:\program files (x86)\cosmic\cxstm8_eval\hstm8;
 
 [Root.Config.1.Settings.2]
 String.2.0=
@@ -297,7 +297,6 @@ PathName=stm8_interrupt_vector.c
 [Root.Include Files]
 ElemType=Folder
 PathName=Include Files
-Child=Root.Include Files.c:\program files (x86)\cosmic\cxstm8_eval\hstm8\iostm8s103.h
 Config.0=Root.Include Files.Config.0
 Config.1=Root.Include Files.Config.1
 
@@ -360,7 +359,3 @@ String.6.0=2016,11,21,23,23,16
 [Root.Include Files.Config.1.Settings.3]
 String.2.0=Performing Custom Build on $(InputFile)
 String.6.0=2016,11,21,23,23,16
-
-[Root.Include Files.c:\program files (x86)\cosmic\cxstm8_eval\hstm8\iostm8s103.h]
-ElemType=File
-PathName=c:\program files (x86)\cosmic\cxstm8_eval\hstm8\iostm8s103.h

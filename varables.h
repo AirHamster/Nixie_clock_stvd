@@ -44,6 +44,7 @@ volatile uint8_t schetchik2 = 0;
 //i2c peremennie
 uint8_t ds_cr = 0b10010000;
 volatile uint8_t shifting;
+volatile uint8_t correction = 1;
 uint16_t tim1comp = 5950;
 #define  ds_address 0xD0
 #define TIM2_TOP 0x3E80 //0x6D60//0x3E80 --1kHz
